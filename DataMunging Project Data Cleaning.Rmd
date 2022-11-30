@@ -1,0 +1,210 @@
+---
+title: "DataMunging Project"
+author: "Paul Hwang"
+output: pdf_document
+---
+
+
+```{r}
+## library
+library(data.table)
+library(dplyr)
+```
+
+
+
+```{r}
+## data loading
+
+project.dir <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\imdb_top250_movies.csv"
+
+movie <- fread(project.dir)
+
+```
+
+
+```{r}
+## fixing runtime to numeric
+
+str(movie$Runtime)
+
+movie$Runtime <- as.integer(sapply(strsplit(movie$Runtime, " "), function(x)(x[1])))
+
+```
+
+```{r}
+## fixing genre
+
+str(movie$Genre)
+
+## checking for unique results
+
+genre.test1 <- strsplit(movie$Genre, ", ")
+
+genre.list <- sort(unique(unlist(genre.test1)))
+
+movie.test <- copy(movie)
+
+## barplot for variation 1 of genre
+barplot(table(unlist(genre.test1)))
+
+## creating TF columns
+
+genre.test2 <- movie.test$Genre
+
+## genre.df is a dataframe of booleans containing whether a genre falls in the category
+genre.df <- data.frame(matrix(NA, ncol = length(genre.list), nrow = length(movie.test$Genre)))
+genre.list2 <- paste0("is", genre.list)
+names(genre.df) <- genre.list2
+
+
+for (i in 1:nrow(genre.df)){
+  for (j in 1:ncol(genre.df)){
+    genre.df[i,j] <- str_detect(movie.test$Genre[i],genre.list[j])
+  }
+}
+
+```
+
+
+
+```{r}
+## fixing language
+
+str(movie$Language)
+
+## checking for unique results
+
+lang.test1 <- strsplit(movie$Language, ", ")
+
+lang.list <- sort(unique(unlist(lang.test1)))
+
+## barplot for variation 1 of genre
+barplot(table(unlist(lang.test1)))
+
+## creating TF columns
+
+lang.test2 <- movie.test$Language
+
+## lang.df is a dataframe of booleans containing whether a genre falls in the category
+lang.df <- data.frame(matrix(NA, ncol = length(lang.list), nrow = length(movie.test$Language)))
+lang.list2 <- paste0("is", lang.list)
+names(lang.df) <- lang.list2
+
+
+for (i in 1:nrow(lang.df)){
+  for (j in 1:ncol(lang.df)){
+    lang.df[i,j] <- str_detect(movie.test$Language[i],lang.list[j])
+  }
+}
+
+```
+
+```{r}
+## fixing Country
+
+str(movie$Country)
+
+## checking for unique results
+
+coun.test1 <- strsplit(movie$Country, ", ")
+
+coun.list <- sort(unique(unlist(coun.test1)))
+
+## barplot for variation 1 of genre
+barplot(table(unlist(coun.test1)))
+
+## creating TF columns
+
+coun.test2 <- movie.test$Country
+
+## lang.df is a dataframe of booleans containing whether a genre falls in the category
+coun.df <- data.frame(matrix(NA, ncol = length(coun.list), nrow = length(movie.test$Country)))
+coun.list2 <- paste0("is", coun.list)
+names(coun.df) <- coun.list2
+
+
+for (i in 1:nrow(coun.df)){
+  for (j in 1:ncol(coun.df)){
+    coun.df[i,j] <- str_detect(movie.test$Country[i],coun.list[j])
+  }
+}
+
+```
+
+```{r}
+## fixing awards
+
+awards.df <- data.frame(matrix(NA, nrow = 250, ncol = 2))
+names(awards.df) <- c("Wins", "Nominations")
+
+gsub("Another.*", "", movie.test$Awards)
+
+## non-oscars split
+anothers <- sub(".*Another", "", movie.test$Awards)
+
+
+## split for wins only
+anothers.win <- sub("win.*", "", anothers)
+anothers.win2 <- sub(".*nomination.*", "", anothers.win)
+anothers.win3 <- as.numeric(anothers.win2)
+anothers.win3[is.na(anothers.win3)] <- 0
+
+## split for nominations only
+anothers.nom <- sub(".*&", "", anothers)
+anothers.nom2 <- sub(".*win.*", "", anothers.nom)
+anothers.nom3 <- sub("nomination.*", "", anothers.nom2)
+anothers.nom4 <- as.numeric(anothers.nom3)
+anothers.nom4[is.na(anothers.nom4)] <- 0
+
+
+
+## split for the oscars and other awards
+oscnco <- sub("Another.*", "", movie.test$Awards)
+oscnco.clean <- sub(".*win.*", "", oscnco)
+oscnco.clean2 <- sub(".*nomination.*", "", oscnco.clean)
+
+
+## split only wins out of named wins
+oscnco.wins <- sub(".*Won", "", oscnco.clean2)
+oscnco.wins2 <- sub(".*for.*", "", oscnco.wins)
+oscnco.wins3 <- sub("([0-9]+).*$", "\\1", oscnco.wins2)
+oscnco.wins4 <- as.numeric(oscnco.wins3)
+oscnco.wins4[is.na(oscnco.wins4)] <- 0
+
+## split only nominations out of named wins
+oscnco.noms <- sub(".*Nominated for", "", oscnco.clean2)
+oscnco.noms2 <- sub(".*Won.*", "", oscnco.noms)
+oscnco.noms3 <- sub("([0-9]+).*$", "\\1", oscnco.noms2)
+oscnco.noms4 <- as.numeric(oscnco.noms3)
+oscnco.noms4[is.na(oscnco.noms4)] <- 0
+
+## final combination of wins and nominations
+
+awards.df[,1] <- oscnco.wins4 + anothers.win3
+awards.df[,2] <- oscnco.noms4 + anothers.nom4
+
+
+
+## checking mechanics for general splits --> require modifications based on what you are checking
+data.frame(anothers, anothers.win2)
+View(data.frame(anothers, anothers.win, anothers.win2))
+
+movie$Awards
+
+```
+
+```{r}
+## fixing box office dollar amount
+boxoff <- gsub('[$,]', "", movie.test$BoxOffice)
+
+View(data.frame(boxoff, movie$BoxOffice))
+```
+
+
+
+```{r}
+## removing useless columns (V1,Released)
+```
+
+
