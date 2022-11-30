@@ -9,6 +9,7 @@ output: pdf_document
 ## library
 library(data.table)
 library(dplyr)
+library(stringr)
 ```
 
 
@@ -16,7 +17,7 @@ library(dplyr)
 ```{r}
 ## data loading
 
-project.dir <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\imdb_top250_movies.csv"
+project.dir <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\imdb_top250_movies.csv"
 
 movie <- fread(project.dir)
 
