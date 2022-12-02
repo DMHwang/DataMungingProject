@@ -249,7 +249,7 @@ Any forms of truncation has been done using only the first three categories
 
 ```{r}
 ## removing useless columns (V1,Released, Plot, imdbID, Type, DVD, Website)
-movie.final <- select(movie, -c("V1", "Num","Released", "Plot", "imdbID", "Type", "DVD", "Website"))
+movie.final <- select(movie, -c("V1","Released", "Plot", "imdbID", "Type", "DVD", "Website"))
 
 ## Replace Writer, Actors, Awards
 movie.final$Writer <- writer.split3
