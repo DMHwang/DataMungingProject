@@ -10,6 +10,7 @@ output: pdf_document
 library(data.table)
 library(dplyr)
 library(stringr)
+library(tidyr)
 ```
 
 
@@ -27,7 +28,7 @@ movie <- fread(project.dir)
 ```{r}
 ## fixing runtime to numeric
 
-str(movie$Runtime)
+## str(movie$Runtime)
 
 movie$Runtime <- as.integer(sapply(strsplit(movie$Runtime, " "), function(x)(x[1])))
 
@@ -36,7 +37,7 @@ movie$Runtime <- as.integer(sapply(strsplit(movie$Runtime, " "), function(x)(x[1
 ```{r}
 ## fixing genre
 
-str(movie$Genre)
+## str(movie$Genre)
 
 ## checking for unique results
 
@@ -65,6 +66,32 @@ for (i in 1:nrow(genre.df)){
   }
 }
 
+```
+
+
+```{r}
+## genre variation 2, loading things in order
+movie.test2 <- copy(movie.test)
+
+genre.split <- movie.test2 %>% 
+  separate(Genre, c("First Genre", "Second Genre", "Third Genre")) %>% 
+  select(c("First Genre", "Second Genre", "Third Genre"))
+```
+
+```{r}
+## Main Writer split loading things in order
+writer.split2 <- str_split_fixed(movie.test2$Writer, ",", 2)[,1]
+names(writer.split2) <- c("Main Writer")
+writer.split3 <- sub("\\(.*", "", writer.split2)
+```
+
+
+```{r}
+## Actor split loading things in order
+movie.test2 <- copy(movie.test)
+
+actor.split2 <- str_split_fixed(movie.test2$Actors, ", ", 4)
+colnames(actor.split2) <- c("First Actor", "Second Actor", "Third Actor", "Fourth Actor")
 ```
 
 
@@ -102,6 +129,13 @@ for (i in 1:nrow(lang.df)){
 ```
 
 ```{r}
+## fixing language ver 2
+language.split <- str_split_fixed(movie.test2$Language, ", ", 4)[,1:3]
+colnames(language.split) <- c("First Language", "Second Language", "Third Language")
+```
+
+
+```{r}
 ## fixing Country
 
 str(movie$Country)
@@ -134,10 +168,17 @@ for (i in 1:nrow(coun.df)){
 ```
 
 ```{r}
+## fixing country ver 2
+country.split <- str_split_fixed(movie.test2$Country, ", ", 4)[,1:3]
+colnames(country.split) <- c("First Country", "Second Country", "Third Country")
+```
+
+
+```{r}
 ## fixing awards
 
 awards.df <- data.frame(matrix(NA, nrow = 250, ncol = 2))
-names(awards.df) <- c("Wins", "Nominations")
+names(awards.df) <- c("Awards", "Nominations")
 
 gsub("Another.*", "", movie.test$Awards)
 
@@ -188,10 +229,8 @@ awards.df[,2] <- oscnco.noms4 + anothers.nom4
 
 
 ## checking mechanics for general splits --> require modifications based on what you are checking
-data.frame(anothers, anothers.win2)
-View(data.frame(anothers, anothers.win, anothers.win2))
-
-movie$Awards
+# data.frame(anothers, anothers.win2)
+# View(data.frame(anothers, anothers.win, anothers.win2))
 
 ```
 
@@ -199,13 +238,84 @@ movie$Awards
 ## fixing box office dollar amount
 boxoff <- gsub('[$,]', "", movie.test$BoxOffice)
 
-View(data.frame(boxoff, movie$BoxOffice))
+# View(data.frame(boxoff, movie$BoxOffice))
 ```
 
+List to work with are:
+1. def change: Writer, Actor, Awards
+2. multi version:Genre, Language, Country, 
 
+Any forms of truncation has been done using only the first three categories
 
 ```{r}
-## removing useless columns (V1,Released)
+## removing useless columns (V1,Released, Plot, imdbID, Type, DVD, Website)
+movie.final <- select(movie, -c("V1", "Num","Released", "Plot", "imdbID", "Type", "DVD", "Website"))
+
+## Replace Writer, Actors, Awards
+movie.final$Writer <- writer.split3
+movie.final <- select(movie.final, -c(Actors, Awards))
+movie.final <- cbind(movie.final, actor.split2, awards.df)
+
 ```
+
+```{r}
+## version 1 boolean method of genre, language, and country
+movie.final1 <- cbind(movie.final, genre.df, lang.df, coun.df)
+movie.final1 <- select(movie.final1, -c(Genre, Language, Country))
+```
+
+```{r}
+## version 2 truncation of first 3
+movie.final2 <- cbind(movie.final, genre.split, language.split, country.split)
+movie.final2 <- select(movie.final2, -c(Genre, Language, Country))
+movie.final2 <- movie.final2 %>% mutate_all(~na_if(.,""))
+```
+
+```{r}
+## version 3 long format of 2
+movie.final3 <- copy(movie.final2)
+
+
+## turning genre into long form
+movie.final3 <- movie.final3 %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre")
+movie.final3 <- select(movie.final3, -c("Genre Type"))
+movie.final3 <- movie.final3[!is.na(movie.final3$Genre),]
+
+## turning language into long form
+movie.final3 <- movie.final3 %>% pivot_longer(
+  cols=c("First Language", "Second Language", "Third Language"),
+  names_to = "Language Type",
+  values_to = "Language")
+movie.final3 <- select(movie.final3, -c("Language Type"))
+movie.final3 <- movie.final3[!is.na(movie.final3$Language),]
+
+## turning language into long form
+movie.final3 <- movie.final3 %>% pivot_longer(
+  cols=c("First Country", "Second Country", "Third Country"),
+  names_to = "Country Type",
+  values_to = "Country")
+movie.final3 <- select(movie.final3, -c("Country Type"))
+movie.final3 <- movie.final3[!is.na(movie.final3$Country),]
+
+
+## View(movie.final3)
+```
+
+```{r}
+## Writing CSV files
+## printing boolean version
+write.csv(movie.final1, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanBooleans.csv", row.names = FALSE)
+
+## printing truncated version
+write.csv(movie.final2, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanTrunc.csv", row.names = FALSE)
+
+## printing long form of truncated version
+write.csv(movie.final3, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanTruncLong.csv", row.names = FALSE)
+```
+
+
 
 
