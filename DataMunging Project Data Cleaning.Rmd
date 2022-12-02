@@ -132,6 +132,10 @@ for (i in 1:nrow(lang.df)){
 ## fixing language ver 2
 language.split <- str_split_fixed(movie.test2$Language, ", ", 4)[,1:3]
 colnames(language.split) <- c("First Language", "Second Language", "Third Language")
+
+## full length
+language.split.full <- str_split_fixed(movie.test2$Language, ", ", 7)
+colnames(language.split.full) <- c("l1","l2","l3","l4","l5","l6","l7")
 ```
 
 
@@ -171,6 +175,10 @@ for (i in 1:nrow(coun.df)){
 ## fixing country ver 2
 country.split <- str_split_fixed(movie.test2$Country, ", ", 4)[,1:3]
 colnames(country.split) <- c("First Country", "Second Country", "Third Country")
+
+## fixing country ver 2 full length
+country.split.full <- str_split_fixed(movie.test2$Country, ", ", 9)
+colnames(country.split.full) <- c("c1","c2","c3","c4","c5","c6","c7","c8","c9")
 ```
 
 
@@ -272,6 +280,14 @@ movie.final2 <- movie.final2 %>% mutate_all(~na_if(.,""))
 ```
 
 ```{r}
+## version 2 full
+movie.final2full <- cbind(movie.final, genre.split, language.split.full, country.split.full)
+movie.final2full <- select(movie.final2full, -c(Genre, Language, Country))
+movie.final2full <- movie.final2full %>% mutate_all(~na_if(.,""))
+```
+
+
+```{r}
 ## version 3 long format of 2
 movie.final3 <- copy(movie.final2)
 
@@ -305,6 +321,41 @@ movie.final3 <- movie.final3[!is.na(movie.final3$Country),]
 ```
 
 ```{r}
+## version 3 long format of 2full
+movie.final3full <- copy(movie.final2full)
+
+
+## turning genre into long form
+movie.final3full <- movie.final3full %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre")
+movie.final3full <- select(movie.final3full, -c("Genre Type"))
+movie.final3full <- movie.final3full[!is.na(movie.final3full$Genre),]
+
+## turning language into long form
+movie.final3full <- movie.final3full %>% pivot_longer(
+  cols=c("l1","l2","l3","l4","l5","l6","l7"),
+  names_to = "Language Type",
+  values_to = "Language")
+movie.final3full <- select(movie.final3full, -c("Language Type"))
+movie.final3full <- movie.final3full[!is.na(movie.final3full$Language),]
+
+## turning language into long form
+movie.final3full <- movie.final3full %>% pivot_longer(
+  cols=c("c1","c2","c3","c4","c5","c6","c7","c8","c9"),
+  names_to = "Country Type",
+  values_to = "Country")
+movie.final3full <- select(movie.final3full, -c("Country Type"))
+movie.final3full <- movie.final3full[!is.na(movie.final3full$Country),]
+
+
+## View(movie.final3)
+```
+
+
+
+```{r}
 ## Writing CSV files
 ## printing boolean version
 write.csv(movie.final1, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanBooleans.csv", row.names = FALSE)
@@ -314,6 +365,12 @@ write.csv(movie.final2, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Fina
 
 ## printing long form of truncated version
 write.csv(movie.final3, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanTruncLong.csv", row.names = FALSE)
+
+## printing full version
+write.csv(movie.final2full, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFull.csv", row.names = FALSE)
+
+## printing long form of full version
+write.csv(movie.final3full, "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFullLong.csv", row.names = FALSE)
 ```
 
 
