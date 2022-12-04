@@ -1,0 +1,117 @@
+---
+title: "DatamungingProjectII"
+author: "Raymond Blaha"
+date: "2022-12-04"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+
+
+MovieClean <- read.delim("/Users/raymondblahajr/Downloads/DataMungingProject-main/MovieCleanFullLong.csv", header = TRUE, sep = ",")
+
+head(MovieClean)
+```
+
+```{r}
+head(MovieClean)
+rownames(MovieClean)
+
+#creating a formaula that would find the mean and standard deviation of ImdbRating. 
+
+ImdbRating <- for (i in 1:nrow(MovieClean)) {
+  print(paste("The mean of the imdbRating is", mean(MovieClean$imdbRating)))
+  print(paste("The standard deviation of the imdbRating is", sd(MovieClean$imdbRating)))
+  return (i)
+}
+
+
+#[1] "The mean of the imdbRating is 8.25480386583286"
+#[1] "The standard deviation of the imdbRating is 0.248839064793034"
+
+ImdbVotes <- for (i in 1:nrow(MovieClean)) {
+  print(paste("the mean of the ImdbVotes is", mean(MovieClean$imdbVotes)))
+  print(paste("the standard deviation of the ImdbVotes is", sd(MovieClean$imdbVotes)))
+  return(i)
+}
+
+#getting back and error. Check str().
+
+#str(imdbVotes)
+
+#returns NULL. 
+
+
+Nominations <- for (i in 1:nrow(MovieClean)){
+  print(paste("the mean of the Nominations is", mean(MovieClean$Nominations)))
+  print(paste("The standard deviation of the Nominations is", sd(MovieClean$Nominations)))
+  return(i)
+}
+
+#[1] "the mean of the Nominations is 48.0523024445708"
+#[1] "The standard deviation of the Nominations is 57.3480739519006"
+
+
+
+```
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+
+plot(Nominations ~ imdbRating, data = MovieClean, main = "Nominations vs. IMDB Rating", xlab = "IMDB Rating", ylab = "Nominations", col = "blue")
+#found it interesting that the IMDB rates on the higher scale did not recieve as many nominations. Why is that?
+
+plot(Nominations ~ Year, data = MovieClean, main = "Nominations vs. Year", xlab = "Year", ylab = "Nominations", col = "blue")
+
+#found that most of the nominations for movies occurred in 1900 to present. 
+
+```
+
+```{r}
+
+
+theme_set(theme_light())
+ImdbRatingplot <- ggplot(MovieClean, aes(x = Nominations, y = imdbRating)) + geom_point() + geom_smooth(method = "lm") + labs(title = "Nominations vs imdbRating", x = "Nominations", y = "imdbRating") + theme(plot.title = element_text(hjust = 0.5))
+Nominationsplot <- ggplot(MovieClean, aes(x = Year, y = Nominations)) + geom_point() + geom_smooth(method = "lm") + labs(title = "Year vs Nominations", x = "Year", y = "Nominations") + theme(plot.title = element_text(hjust = 0.5))
+ggarrange(ImdbRatingplot, Nominationsplot, ncol = 1, nrow = 2)
+
+```
+
+```{r}
+#install.packages("plotly")
+#install.packages("ggplot2")
+#install.packages("tidyverse")
+#install.packages("cowplot")
+#install.packages("dplyr")
+
+library("dplyr")
+library("ggplot2")
+library("plotly")
+
+MovieClean %>%
+    sample_n(50) %>%
+    plot_ly(
+        x = ~ imdbRating,
+        y = ~ imdbVotes,
+        z = ~ Nominations,
+        color = ~imdbRating,
+        size = ~80,
+        text = ~paste("Title:", Title, "<br>imdbRating:", imdbRating, "<br>imdbVotes:", imdbVotes, "<br>Nominations:", Nominations),
+        aplha = 0.5,
+        type = "scatter3d",
+        mode = "markers")
+
+```
+```{r}
+
+
+
+
+```
