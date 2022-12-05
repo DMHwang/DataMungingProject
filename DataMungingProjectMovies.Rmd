@@ -1,0 +1,39 @@
+---
+title: "DataMungingProjectMovies"
+output: html_document
+date: "2022-12-05"
+---
+
+
+
+
+
+
+
+
+
+
+
+#IMBD Ratings of movies Vs Production Company
+
+```{r}
+ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$imdbRating, y = MovieCleanFull$Production)) + geom_col()
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$imdbRating, y = MovieCleanFull$Production, MovieCleanFull$Writer)) + geom_col()
+```
+
+
+
+
+#ImBD Ratings vs Writers
+```{r}
+ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$imdbRating, y = MovieCleanFull$Writer)) + geom_col()
+```
+
