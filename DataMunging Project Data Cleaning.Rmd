@@ -253,7 +253,7 @@ movie$BoxOffice <- as.integer(boxoff)
 ```{r}
 ## fixing voting number to numeric
 voteCount <- gsub(",", "", movie.test$imdbVotes)
-movie$imdbVotes <- as.integer(movie$imdbVotes)
+movie$imdbVotes <- as.integer(voteCount)
 ```
 
 
