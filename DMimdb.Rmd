@@ -1,0 +1,113 @@
+---
+title: "DMimdb"
+output: html_document
+date: "2022-12-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1) Reading data set in:
+```{r}
+MovieClean <- read.delim("C:/Users/15639/Documents/Applied Stat 1/MovieCleanFull.txt", header = TRUE, sep = ",")
+head(MovieClean)
+```
+
+# 2) Install library
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+
+```
+
+
+# 3) Viewing histogram of ratings for imdb and Metascore:
+## imdb Rating
+* Among the top 250 films, the most prevalent imdb rating was between 8 and 8.2
+* Very few films received imdb rating of 9 or higher
+* Minimum imdb rating was 8
+```{r}
+hist(MovieClean$imdbRating)
+```
+
+## Metascore
+* Metascores have much more spread than imdb rating
+* Not as skewed as imdb Rating
+* The range of Metascores for top 250 films was between 50 and a perfect 100
+```{r}
+hist(MovieClean$Metascore)
+```
+
+## imdb Ratings vs Metascores
+* We would expect the line y=10x if each film received the same rating between imdb and metascores
+* The best fit line has a slope less than 10 
+* Metascores were lower than imdb ratings on average
+```{r}
+sp <- ggplot(MovieClean, aes(x = imdbRating, y = Metascore)) + geom_point() + geom_smooth(method = "lm", formula = y~x) + 
+  geom_abline(intercept=0, slope=10)
+sp
+```
+
+## Association between number of Awards and BoxOffice
+* The lines represent mean number of awards and mean boxoffice 
+* boxoffice data contained many missing values, statistics may also be affected by outliers
+* Each point represents a film that has a reported boxoffice, with awards and its metascore
+* The lines group films into four separate groups
+* Bottom left represents films that received less than mean boxoffice = 158,727,934 and received less than mean awards ~ 29
+```{r}
+ggplot(MovieClean, aes(x = BoxOffice, y = Awards, color = Metascore)) + geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(MovieClean$BoxOffice, na.rm=TRUE), linetype = "dashed", color = "blue")
+  
+```
+
+## Association between Release Year and Metascore
+```{r}
+ggmeta <- MovieClean %>%
+  drop_na(Metascore) %>%
+  group_by(Year) %>%
+  summarise(mean_ms = mean(Metascore, na.rm=TRUE))
+
+ggplot(ggmeta, aes(Year, mean_ms)) + geom_point() + geom_smooth(method='lm', formula= y~x) + ggtitle("Mean Metascore of All Films Released Each Year")
+
+```
+
+```{r}
+ggimdb <- MovieClean %>%
+  group_by(Year) %>%
+  summarise(mean_im = mean(imdbRating, na.rm=TRUE))
+
+ggplot(ggimdb, aes(Year, mean_im)) + geom_point() + geom_smooth(method='lm', formula= y~x) + ggtitle("Mean imdbRating of All Films Released Each Year")
+
+```
+
+## Count of Genre
+```{r}
+ggpg <- MovieClean %>%
+  group_by(First.Genre) %>%
+  count()
+#ggpg
+ggplot(ggpg, aes(x = First.Genre, y = n/sum(n))) + geom_bar(stat="identity") + 
+  ggtitle("Most Popular First Genre")
+  
+```
+
+
+```{r}
+ggpgs <- MovieClean %>%
+  group_by(Second.Genre) %>%
+  count()
+#ggpgs
+ggplot(ggpgs, aes(x = Second.Genre, y = n/sum(n))) + geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle=90, hjust=1)) + 
+  ggtitle("Most Popular Second Genre")
+  
+```
+
+
+
+
