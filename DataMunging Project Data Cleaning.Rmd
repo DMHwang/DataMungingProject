@@ -245,9 +245,17 @@ awards.df[,2] <- oscnco.noms4 + anothers.nom4
 ```{r}
 ## fixing box office dollar amount
 boxoff <- gsub('[$,]', "", movie.test$BoxOffice)
+movie$BoxOffice <- as.integer(boxoff)
 
 # View(data.frame(boxoff, movie$BoxOffice))
 ```
+
+```{r}
+## fixing voting number to numeric
+voteCount <- gsub(",", "", movie.test$imdbVotes)
+movie$imdbVotes <- as.integer(movie$imdbVotes)
+```
+
 
 List to work with are:
 1. def change: Writer, Actor, Awards
