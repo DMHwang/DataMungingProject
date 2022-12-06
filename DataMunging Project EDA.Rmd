@@ -11,10 +11,8 @@ library(data.table)
 ## Loading Data
 data.wide <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFull.csv"
 data.long <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFullLong.csv"
-
 movie.long <- fread(data.long)
 movie.wide <- fread(data.wide)
-
 ```
 
 
@@ -34,7 +32,6 @@ gp <- ggplot(data = movie.wide, aes(x = Year)) +
 gp2 <- ggplot(data = movie.wide, aes(x = Year)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = Year)) + 
@@ -57,7 +54,6 @@ gp <- ggplot(data = movie.wide, aes(x = Runtime)) +
 gp2 <- ggplot(data = movie.wide, aes(x = Runtime)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = Runtime)) + 
@@ -77,13 +73,13 @@ length(unique(movie.wide$Director))
 table.dir <- plyr::count(movie.wide$Director)
 gp <- ggplot(data = movie.wide, aes(x=Director)) +
   geom_bar(stat = "count",color = "black", fill = "lightblue")
-
 ggplotly(gp)
+
 table.dir[table.dir$freq > 3,]
 
 gp2 <- ggplot(data = table.dir[table.dir$freq > 3,], aes(x=x, y=freq)) +
-  geom_bar(stat = "identity",color = "black", fill = "lightblue")
-
+  geom_bar(stat = "identity",color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp2)
 ```
 
@@ -95,13 +91,11 @@ length(unique(movie.wide$Writer))
 table.wri <- plyr::count(movie.wide$Writer)
 gp <- ggplot(data = table.wri, aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue")
-
 ggplotly(gp)
-table.wri[table.wri$freq > 3,]
 
+table.wri[table.wri$freq > 3,]
 gp2 <- ggplot(data = table.wri[table.wri$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue")
-
 ggplotly(gp2)
 ```
 
@@ -118,7 +112,6 @@ gp <- ggplot(data = movie.wide, aes(x = Metascore)) +
 gp2 <- ggplot(data = movie.wide, aes(x = Metascore)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = Metascore)) + 
@@ -162,7 +155,6 @@ gp <- ggplot(data = movie.wide, aes(x = imdbVotes)) +
 gp2 <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = imdbVotes)) + 
@@ -183,7 +175,6 @@ gp <- ggplot(data = movie.wide, aes(x = BoxOffice)) +
 gp2 <- ggplot(data = movie.wide, aes(x = BoxOffice)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = BoxOffice)) + 
@@ -199,19 +190,18 @@ length(unique(movie.wide$Production))
 table.pro <- plyr::count(movie.wide$Production)
 gp <- ggplot(data = table.pro, aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue")
-
 ggplotly(gp)
+
 table.pro[table.pro$freq > 3,]
 
 gp2 <- ggplot(data = table.pro[table.pro$freq > 3,], aes(x=x, y=freq)) +
-  geom_bar(stat = "identity", color = "black", fill = "lightblue")
-
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp2)
 ```
 
 ```{r}
 library(tidyr)
-
 ## Actors
 actors.data <- movie.wide[,c("First Actor", "Second Actor", "Third Actor", "Fourth Actor")]
 actors <- actors.data %>% pivot_longer(
@@ -225,13 +215,13 @@ length(unique(actors$Actor))
 table.act <- plyr::count(actors$Actor)
 gp <- ggplot(data = table.act, aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue")
-
 ggplotly(gp)
+
 table.act[table.act$freq > 3,]
 
 gp2 <- ggplot(data = table.act[table.act$freq > 3,], aes(x=x, y=freq)) +
-  geom_bar(stat = "identity", color = "black", fill = "lightblue")
-
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp2)
 ```
 
@@ -250,7 +240,6 @@ ggplotly(gp)
 gp2 <- ggplot(data = movie.wide, aes(x = Awards)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = Awards)) + 
@@ -275,7 +264,6 @@ ggplotly(gp)
 gp2 <- ggplot(data = movie.wide, aes(x = Nominations)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
-
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ggplot(data = movie.wide, aes(x = Nominations)) + 
@@ -289,10 +277,8 @@ movie.wide[movie.wide$Nominations > 100,c("Title", "Nominations", "imdbRating")]
 ## showing deviations for awards and nominations
 movie.wide[movie.wide$Awards > 100 | movie.wide$Nominations > 100,
            c("Title", "Awards", "Nominations", "imdbRating")]
-
 movie.wide[movie.wide$Awards > 100 & movie.wide$Nominations > 100,
            c("Title", "Awards", "Nominations", "imdbRating")]
-
 movie.wide[movie.wide$Awards > 100 & movie.wide$Nominations < 100,
            c("Title", "Awards", "Nominations", "imdbRating")]
 ```
@@ -309,10 +295,11 @@ genres <- genre.data %>% pivot_longer(
 length(unique(genres$Genre))
 
 table.gen <- na.omit(plyr::count(genres$Genre))
+
 gp <- ggplot(data = table.gen, aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
-  scale_y_continuous(limits = c(0,180), expand = c(0,0))
-
+  scale_y_continuous(limits = c(0,180), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp)
 ```
 
@@ -328,18 +315,19 @@ language <- lang.data %>% pivot_longer(
 length(unique(language$Language))
 
 table.lang <- na.omit(plyr::count(language$Language))
+
 gp <- ggplot(data = table.lang, aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
-  scale_y_continuous(limits = c(0,260), expand = c(0,0))
-
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp)
 
 table.lang[table.lang$freq > 3,]
 
 gp2 <- ggplot(data = table.lang[table.lang$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
-  scale_y_continuous(limits = c(0,260), expand = c(0,0))
-
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp2)
 ```
 
@@ -357,16 +345,15 @@ length(unique(country$Country))
 table.coun <- na.omit(plyr::count(country$Country))
 gp <- ggplot(data = table.coun, aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
-  scale_y_continuous(limits = c(0,260), expand = c(0,0))
-
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp)
 
 table.coun[table.coun$freq > 3,]
-
 gp2 <- ggplot(data = table.coun[table.coun$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
-  scale_y_continuous(limits = c(0,260), expand = c(0,0))
-
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
 ggplotly(gp2)
 ```
 
@@ -375,18 +362,182 @@ ggplotly(gp2)
 
 ```{r}
 library(corrplot)
-
 ## intro graphics with correlation
 movie.numeric <- movie.wide[,c("Year", "Runtime", "Metascore", "imdbRating", 
                                "imdbVotes", "BoxOffice", "Awards", "Nominations")]
 res <- cor(movie.numeric, use = "pairwise.complete.obs")
-
 res
 corrplot(res, type = "full", order = "original", t1.srt = 45)
+```
+
+```{r}
+## using long form for genre only
+movie.genre <- movie.wide %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre")
+movie.genre <- movie.genre[!is.na(movie.genre$Genre),]
+```
+
+
+```{r}
+## Metascore Scatterplots "Year", "Runtime", "imdbRating", "imdbVotes", "BoxOffice", "Awards", "Nominations"
+
+cor(movie.wide$Metascore, movie.wide$Year, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$Runtime, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Runtime)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$imdbRating, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= imdbRating)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$imdbVotes, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= imdbVotes)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$BoxOffice, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= BoxOffice)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$Awards, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Awards)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$Nominations, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Nominations)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+```{r}
+## imdbRating Scatterplots "Year", "Runtime", "Metascore", "imdbVotes", "BoxOffice", "Awards", "Nominations"
+
+cor(movie.wide$imdbRating, movie.wide$Year, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Runtime, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Runtime)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Metascore, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$imdbVotes, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= imdbVotes)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$BoxOffice, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= BoxOffice)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Awards, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Awards)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Nominations, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Nominations)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+```{r}
+## imdbRating Scatterplots "Year", "Runtime", "Metascore", "imdbVotes", "BoxOffice", "Awards", "Nominations"
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Runtime)) +
+  geom_point() + geom_smooth() + theme_bw()
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = imdbVotes)) + 
+  geom_point() + geom_smooth() + theme_bw()
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = BoxOffice)) + 
+  geom_point() + geom_smooth() + theme_bw()
+
+gp1 <- ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Awards)) + 
+  geom_point() + geom_smooth() + theme_bw()
+ggplotly(gp1)
+
+gp2 <- ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Nominations)) + 
+  geom_point() + geom_smooth() + theme_bw()
+ggplotly(gp2)
 
 ```
 
 
+```{r}
+## model creating Metascore
+meta.lm2 <-lm(data = movie.wide, Metascore ~ 1)
+meta.lm <- lm(data = movie.wide, Metascore ~ Year + Runtime + 
+                 imdbRating + imdbVotes + BoxOffice + Awards + Nominations)
+summary(meta.lm)
 
+meta.lm3 <- lm(data = movie.wide, Metascore ~ Year + Runtime + 
+                 imdbRating + imdbVotes + BoxOffice + Awards * Nominations)
+summary(meta.lm3)
+
+step(meta.lm2, Metascore ~ Year + Runtime + 
+                 imdbRating + imdbVotes + BoxOffice + Awards + Nominations, 
+     direction = "forward")
+
+step(meta.lm, Metascore ~ 1, direction = "both")
+
+## model creating imdbRating
+imdb.lm2 <-lm(data = movie.wide, imdbRating ~ 1)
+imdb.lm <- lm(data = movie.wide, imdbRating ~ Year + Runtime + 
+                 Metascore + imdbVotes + BoxOffice + Awards + Nominations)
+summary(imdb.lm)
+
+step(imdb.lm, imdbRating ~ 1, direction = "backward")
+```
+
+```{r}
+## model creating imdbRating with only full values
+imdb.lm2 <-lm(data = movie.genre, imdbRating ~ 1)
+imdb.lm <- lm(data = movie.genre, imdbRating ~ Year + Runtime + 
+                 imdbVotes + Awards + Nominations)
+summary(imdb.lm)
+
+step(imdb.lm2, imdbRating ~ Year + Runtime + 
+                  imdbVotes + Awards + Nominations, 
+     direction = "forward")
+```
+
+```{r}
+## Metascore
+gp <- ggplot(data = movie.genre, aes(x = Metascore, fill = Genre)) + 
+  geom_histogram(color = "black") +
+  scale_y_continuous(limits= c(0,40), expand = c(0,0)) +
+  theme_light()
+gp
+
+gp2 <- ggplot(data = movie.genre, aes(x = Metascore)) + 
+  geom_freqpoly(aes(colour = Genre)) +
+  theme_void()
+gp2
+ggplotly(gp2)
+
+```
+
+```{r}
+## imdbRating
+gp <- ggplot(data = movie.genre, aes(x = imdbRating, fill = Genre)) + 
+  geom_histogram(color = "black") +
+  scale_y_continuous(limits= c(0,100), expand = c(0,0)) +
+  theme_light()
+gp
+
+gp2 <- ggplot(data = movie.genre, aes(x = imdbRating)) + 
+  geom_freqpoly(aes(colour = Genre)) +
+  theme_void()
+gp2
+ggplotly(gp2)
+
+```
 
 
