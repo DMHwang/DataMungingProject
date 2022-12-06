@@ -37,3 +37,44 @@ ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$i
 ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$imdbRating, y = MovieCleanFull$Writer)) + geom_col()
 ```
 
+Function for completeness and consistency 
+```{r}
+#1-colSums(is.na(df)/lengths(df))
+
+1-colSums(is.na(MovieCleanFull)/lengths(MovieCleanFull))
+```
+
+
+
+barplot(table(MovieCleanFull$Title), col=c("lightblue","darkred"),main="Low (0) vs. High (1) Temp",ylab="Count",horiz=T)
+
+table(MovieCleanFull$Title)
+sort(MovieCleanFull$Title(MovieCleanFull$ImdbRating), decreasing = TRUE)
+
+
+
+```{r}
+cor(MovieCleanFull$imdbRating, MovieCleanFull$Runtime)
+```
+```{r}
+plot(MovieCleanFull$imdbRating, MovieCleanFull$Runtime)
+```
+
+```{r}
+ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$Awards, y = MovieCleanFull$Production)) + geom_col()
+```
+
+
+```{r}
+ggplot(MovieCleanFull = MovieCleanFull$Title, mapping = aes(x = MovieCleanFull$Awards, y = MovieCleanFull$Production)) + geom_col() + geom_bar(stat="identity", color="white") + theme_minimal()
+```
+
+
+
+```{r}
+cor(MovieCleanFull$Awards, MovieCleanFull$imdbRating)
+```
+```{r}
+plot(MovieCleanFull$Awards, MovieCleanFull$imdbRating)
+```
+
