@@ -538,7 +538,7 @@ mag2 <- ggplot(movie.wide, aes(x = BoxOffice, y = Awards, color = imdbRating, la
 ggplotly(mag2)
 ```
 
-## Nominations and imdbRatings Pt1
+## Nominations and imdbRatings
 
 <!-- - Showing the relationship between Nominations and imdbRatings. Seems to be flat overall.  -->
 <!-- - Seems that most Nominations that have occurred are with imdbRatings between 8.2-8.5. -->
@@ -550,7 +550,7 @@ ImdbRatingplot <- ggplot(movie.wide, aes(x = Nominations, y = imdbRating)) + geo
 ImdbRatingplot
 ```
 
-## Nominations and imdbRatings Pt2
+## Nominations and Year
 
 <!-- - Showing the relationship between Nominations and Year of movie release.  -->
 <!-- - Nominations for movies exploded around the 1990's. Where we see the first instance of a movie receiving 100 nominations.  -->
@@ -598,45 +598,12 @@ ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y
 ```
 
 
-# ImBD Ratings and Writers
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Writer)) + geom_col()
-```
-
-
-## What is this????
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-barplot(table(movie.wide$Title), col=c("lightblue","darkred"),main="Low (0) vs. High (1) Temp",ylab="Count",horiz=T)
-```
-
-## ImdbRating and Runtime
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, results='hide'}
-cor(movie.wide$imdbRating, movie.wide$Runtime)
-```
-- Correlation Coefficient: 0.248
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-plot(movie.wide$imdbRating, movie.wide$Runtime)
-```
-
 ## Awards and Production
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$Awards, y = movie.wide$Production)) + geom_col() + geom_bar(stat="identity", color="white") + theme_minimal()
 ```
 
-## Award and imdbRating
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE, results='hide'}
-cor(movie.wide$Awards, movie.wide$imdbRating)
-```
-- Correlation Coefficient: 0.200
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-plot(movie.wide$Awards, movie.wide$imdbRating)
-```
 
 ## Correlation Pt 1
 
@@ -693,7 +660,7 @@ ggplot(data = movie.wide, aes(y=imdbRating, x= Runtime)) + geom_point() +
 ```
 
 
-## ImdbRating and Runtime
+## ImdbRating and ImdbVotes
 
 - Correlation Coefficient: 0.657
 ```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
@@ -741,6 +708,26 @@ cor(movie.wide$imdbRating, movie.wide$Nominations, use = "pairwise.complete.obs"
 ggplot(data = movie.wide, aes(y=imdbRating, x= Nominations)) + geom_point() + 
   geom_smooth() + theme_bw()
 ```
+
+## ImdbRatings and Genre
+
+```{r, cache=TRUE, message=FALSE, echo=FALSE, results='hide'}
+## using long form for genre only
+movie.genre <- movie.wide %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre")
+movie.genre <- movie.genre[!is.na(movie.genre$Genre),]
+```
+
+```{r, cache=TRUE, message=FALSE, echo=FALSE}
+gp <- ggplot(data = movie.genre, aes(x = imdbRating, fill = Genre)) + 
+  geom_histogram(color = "black") +
+  scale_y_continuous(limits= c(0,100), expand = c(0,0)) +
+  theme_light()
+ggplotly(gp)
+```
+
 
 ## Questions
 

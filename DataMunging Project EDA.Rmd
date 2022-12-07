@@ -530,7 +530,7 @@ gp <- ggplot(data = movie.genre, aes(x = imdbRating, fill = Genre)) +
   geom_histogram(color = "black") +
   scale_y_continuous(limits= c(0,100), expand = c(0,0)) +
   theme_light()
-gp
+ggplotly(gp)
 
 gp2 <- ggplot(data = movie.genre, aes(x = imdbRating)) + 
   geom_freqpoly(aes(colour = Genre)) +
