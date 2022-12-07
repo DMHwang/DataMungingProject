@@ -515,7 +515,7 @@ ggplotly(gp2)
 ```
 
 
-## Number of Awards, BoxOffice, and imbdRatings Pt1
+## Number of Awards, BoxOffice, and Metascore Ratings
 
 ```{r, echo = FALSE, message=FALSE, warning=FALSE}
 library(ggplot2)
@@ -535,7 +535,7 @@ ggplotly(mag1)
 <!-- - We might expect movies with high Award counts to have higher Box Office  -->
 
 
-## Number of Awards, BoxOffice, and imbdRatings Pt2
+## Number of Awards, BoxOffice, and imbdRatings
 
 
 <!-- * Top Left Region -->
@@ -575,7 +575,7 @@ Nominationsplot <- ggplot(movie.wide, aes(x = Year, y = Nominations)) + geom_poi
 Nominationsplot
 ```
 
-## Nominations and imdbRatings Pt3
+## Nominations, imdbVotes and imdbRatings
 
 <!-- - X-Axis as imdbRating -->
 <!-- - Y-Axis as imdbVotes -->

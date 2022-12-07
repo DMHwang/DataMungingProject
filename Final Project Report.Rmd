@@ -1,0 +1,809 @@
+---
+title: "DataMunging PPT"
+author: "Melvin Adkins, Raymond Blaha, Paul Hwang, Stephanie Diaz Ortega"
+output: html_document
+fontsize: 12pt
+---
+
+## IMDB Top 250 Movies
+
+- Set of 250 movie data from IMDB
+- (https://www.kaggle.com/datasets/yehorkorzh/imdb-top-250-movies)
+
+```{r, echo = FALSE, results=FALSE, message=FALSE, warning=FALSE, comment=FALSE, cache = TRUE}
+library(data.table)
+
+## Loading Data
+data.wide <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFull.csv"
+movie.wide <- fread(data.wide)
+
+```
+
+## Variables
+
+### Numeric
+- Num, Year, Released, Runtime, Metascore, imdbRating, imdbVote, imdbID
+
+### Text
+- Title, Genre, Director, Writer, Actor, Plot, Language, Country, Awards, Type, DVD, BoxOffice, Production, Websites
+
+## DataMunging Pt1
+
+### Type Modification
+
+We modified values from text to numeric outputs.
+
+- Runtime -> "123min"
+- BoxOffice -> "$1,234,567"
+- imdbVoting -> "1,234,567"
+
+## DataMunging Pt2
+
+### Data Split
+
+We split single-cell multi-entry to multi-cell single entry for following values.
+
+- Genre -> "Drama, Action"
+- Actor -> "Tim Robbins, Morgan Freeman"
+- Writer -> "Mario Puzo (screenplay)"
+- Language -> "English, Italian, Latin"
+- Country -> "USA, UK"
+- Awards -> "Won 3 Oscars. Another 23 wins & 27 nominations."
+
+## DataMunging Pt3
+
+### Removed
+
+We removed columns as they were irrelevant for analysis.
+
+- Released
+- Plot
+- imdbID
+- Type
+- DVD
+- Website
+
+## DataMunging Pt4
+
+### Consistency and Completeness
+
+We tested for completeness.
+
+```{r, echo = FALSE, message=FALSE, cache=TRUE}
+#1-colSums(is.na(df)/lengths(df))
+cc <- 1-colSums(is.na(movie.wide)/lengths(movie.wide))
+cc
+
+```
+
+## Exploratory Data Analysis
+
+### 1D Analysis
+
+We observed characteristics of singular variables and presented them using appropriate charts.
+
+
+## Year
+- Mean: 1982.676, SD: 24.80921
+
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+library(ggplot2)
+library(cowplot)
+
+# mean(movie.wide$Year)
+# sd(movie.wide$Year)
+
+gp <- ggplot(data = movie.wide, aes(x = Year)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(1920,2020)) +
+  scale_y_continuous(limits= c(0,20), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = Year)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(1920,2020)) +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = Year)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   scale_y_continuous(limits= c(0,0.03), expand = c(0,0)) +
+#   theme_light()
+```
+
+## Runtime
+- Mean: 126.808, SD: 29.76338
+
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$Runtime)
+# sd(movie.wide$Runtime)
+
+gp <- ggplot(data = movie.wide, aes(x = Runtime)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,300)) +
+  scale_y_continuous(limits= c(0,25), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = Runtime)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,300)) +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = Runtime)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   scale_y_continuous(limits= c(0,0.02), expand = c(0,0)) +
+#   theme_light()
+```
+
+
+## Directors Pt1
+There were 155 unique directors.
+
+There were too many directors, so we only plotted occurrence of four or more.
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+library(plotly)
+library(plyr)
+
+# length(unique(movie.wide$Director))
+
+table.dir <- plyr::count(movie.wide$Director)
+gp <- ggplot(data = movie.wide, aes(x=Director)) +
+  geom_bar(stat = "count",color = "black", fill = "lightblue")
+ggplotly(gp)
+```
+
+## Directors Pt2
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE, null_prefix = TRUE}
+new.table <- table.dir[table.dir$freq > 3,]
+new.table
+```
+
+## Directors Pt3
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+gp2 <- ggplot(data = table.dir[table.dir$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity",color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90)) + xlab("Directors")
+ggplotly(gp2)
+```
+
+
+## Writers Pt1
+There were 213 unique writers.
+
+There were too many writers, so we only plotted occurrence of four or more.
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+# length(unique(movie.wide$Writer))
+
+table.wri <- plyr::count(movie.wide$Writer)
+gp <- ggplot(data = table.wri, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+# ggplotly(gp)
+
+table.wri[table.wri$freq > 3,]
+```
+
+## Writers Pt2
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+gp2 <- ggplot(data = table.wri[table.wri$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") + xlab("Writers")
+ggplotly(gp2)
+```
+
+
+## Metascore
+- Mean: 80.0452, SD: 11.03034
+```{r, echo=FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$Metascore, na.rm = TRUE)
+# sd(movie.wide$Metascore, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = Metascore)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,100)) +
+  scale_y_continuous(limits= c(0,15), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = Metascore)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,100)) +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = Metascore)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   scale_y_continuous(limits= c(0,0.05), expand = c(0,0)) +
+#   theme_light()
+```
+
+## imbdRating
+- Mean: 8.244, SD: 0.2457347
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$imdbRating)
+# sd(movie.wide$imdbRating)
+
+gp <- ggplot(data = movie.wide, aes(x = imdbRating)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(8, 10)) +
+  scale_y_continuous(limits= c(0,75), expand = c(0,0)) +
+  theme_light()
+## ggplotly(gp)
+
+gp2 <- ggplot(data = movie.wide, aes(x = imdbRating)) +
+  scale_x_continuous(limits = c(8, 10)) +
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = imdbRating)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   scale_y_continuous(limits= c(0,7.5), expand = c(0,0)) +
+#   theme_light()
+```
+
+
+## imbdVotes
+- Mean: 431401.3, SD: 367703.3
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$imdbVotes, na.rm = TRUE)
+# sd(movie.wide$imdbVotes, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(0, 2250000)) +
+  scale_y_continuous(limits= c(0,60), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(0, 2250000)) +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = imdbVotes)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   theme_light()
+```
+
+## boxoffice
+- Mean: 158727934, SD: 169133912
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$BoxOffice, na.rm = TRUE)
+# sd(movie.wide$BoxOffice, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = BoxOffice)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,15), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = BoxOffice)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = BoxOffice)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   theme_light()
+```
+
+## Production Pt1
+There were 89 unique productions.
+
+There were too many production companies, so we only plotted occurrence of four or more.
+
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+# length(unique(movie.wide$Production))
+
+table.pro <- plyr::count(movie.wide$Production)
+gp <- ggplot(data = table.pro, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+ggplotly(gp)
+```
+
+## Production Pt2
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+table.pro[table.pro$freq > 3,]
+```
+
+## Production Pt3
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+gp2 <- ggplot(data = table.pro[table.pro$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90)) + xlab("production")
+ggplotly(gp2)
+```
+
+## Actors and Actress Pt1
+There were 773 actors and actress.
+
+There were too many actors and actresses, so we only plotted occurrence of four or more.
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+library(tidyr)
+actors.data <- movie.wide[,c("First Actor", "Second Actor", "Third Actor", "Fourth Actor")]
+actors <- actors.data %>% pivot_longer(
+  cols=c("First Actor", "Second Actor", "Third Actor", "Fourth Actor"),
+  names_to = "Actors Type",
+  values_to = "Actor"
+)
+
+# length(unique(actors$Actor))
+
+table.act <- plyr::count(actors$Actor)
+gp <- ggplot(data = table.act, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+# ggplotly(gp)
+
+head(table.act[table.act$freq > 3,])
+
+# gp2 <- ggplot(data = table.act[table.act$freq > 3,], aes(x=x, y=freq)) +
+#   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+#   theme(axis.text.x = element_text(angle = 90))
+# ggplotly(gp2)
+```
+
+## Actors and Actress Pt2
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+gp2 <- ggplot(data = table.act[table.act$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90)) + xlab("Actors and Actresses")
+ggplotly(gp2)
+```
+
+## Awards Pt1
+- Mean: 29.44, SD: 40.12799
+```{r, echo = FALSE, warning=FALSE, comment = FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$Awards, na.rm = TRUE)
+# sd(movie.wide$Awards, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = Awards)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(-10, 250)) +
+  scale_y_continuous(limits = c(0,60), expand = c(0,0)) +
+  theme_light()
+# ggplotly(gp)
+
+gp2 <- ggplot(data = movie.wide, aes(x = Awards)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(-10, 250)) +
+  theme_void()
+
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = Awards)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   theme_light()
+```
+
+## Awards Pt2
+There were 28 movies with 75 awards or more
+```{r, echo = FALSE, warning = FALSE, cache = TRUE, message=FALSE}
+head(movie.wide[movie.wide$Awards > 75 ,c("Title", "Awards", "imdbRating")])
+```
+
+
+## Nominations Pt1
+- Mean: 40.308, SD: 52.18792
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+# mean(movie.wide$Nominations, na.rm = TRUE)
+# sd(movie.wide$Nominations, na.rm = TRUE)
+gp <- ggplot(data = movie.wide, aes(x = Nominations)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(-20,350)) +
+  scale_y_continuous(limits= c(0,60), expand = c(0,0))  +
+  theme_light()
+# ggplotly(gp)
+
+gp2 <- ggplot(data = movie.wide, aes(x = Nominations)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(-20,350)) +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+# ggplot(data = movie.wide, aes(x = Nominations)) + 
+#   geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+#   geom_density(alpha = 0.1, fill = "red") +
+#   theme_light()
+```
+
+## Nominations Pt2
+There were 25 movies with 120 nominations or more.
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+head(movie.wide[movie.wide$Nominations > 120,c("Title", "Nominations", "imdbRating")])
+```
+
+## Awards and Nominations Pt1
+There are 34 movies with 75+ awards or 120+ nominations
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+## showing deviations for awards and nominations
+head(movie.wide[movie.wide$Awards > 75 | movie.wide$Nominations > 120,
+           c("Title", "Awards", "Nominations", "imdbRating")])
+```
+
+## Awards and Nominations Pt2
+There are 19 movies with 75+ awards and 120+ nominations
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+## showing deviations for awards and nominations
+head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations > 120,
+           c("Title", "Awards", "Nominations", "imdbRating")])
+```
+
+## Awards and Nominations Pt3
+There are 9 movies with 75+ awards and 120- nominations
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+## showing deviations for awards and nominations
+head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations < 120,
+           c("Title", "Awards", "Nominations", "imdbRating")])
+```
+
+## Awards and Nominations Pt4
+There are 6 movies with 75- awards and 120+ nominations
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+## showing deviations for awards and nominations
+movie.wide[movie.wide$Awards < 75 & movie.wide$Nominations > 120,
+           c("Title", "Awards", "Nominations", "imdbRating")]
+```
+
+
+
+## Genre
+There are 24 unique genres.
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+genre.data <- movie.wide[,c("First Genre", "Second Genre", "Third Genre")]
+genres <- genre.data %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre"
+)
+
+# length(unique(genres$Genre))
+
+table.gen <- na.omit(plyr::count(genres$Genre))
+
+gp <- ggplot(data = table.gen, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,180), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90)) + xlab("Genres")
+ggplotly(gp)
+```
+
+## Language Pt1
+There are 44 unique languages.
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+lang.data <- movie.wide[,c("l1","l2","l3","l4","l5","l6","l7")]
+language <- lang.data %>% pivot_longer(
+  cols=c("l1","l2","l3","l4","l5","l6","l7"),
+  names_to = "Language Type",
+  values_to = "Language"
+)
+
+# length(unique(language$Language))
+
+table.lang <- na.omit(plyr::count(language$Language))
+
+gp <- ggplot(data = table.lang, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
+# ggplotly(gp)
+
+table.lang[table.lang$freq > 3,]
+```
+
+
+
+## Language Pt2
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+gp2 <- ggplot(data = table.lang[table.lang$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
+  theme(axis.text.x = element_text(angle = 90)) + xlab("Language")
+ggplotly(gp2)
+```
+
+## Country Pt1
+There are 31 unique countries.
+```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
+coun.data <- movie.wide[,c("c1","c2","c3","c4","c5","c6","c7","c8","c9")]
+country <- coun.data %>% pivot_longer(
+  cols=c("c1","c2","c3","c4","c5","c6","c7","c8","c9"),
+  names_to = "Country Type",
+  values_to = "Country"
+)
+
+# length(unique(country$Country))
+
+table.coun <- na.omit(plyr::count(country$Country))
+# gp <- ggplot(data = table.coun, aes(x=x, y=freq)) +
+#   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+#   scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
+#   theme(axis.text.x = element_text(angle = 90))
+# ggplotly(gp)
+
+table.coun[table.coun$freq > 3,]
+```
+
+## Country Pt2
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
+gp2 <- ggplot(data = table.coun[table.coun$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp2)
+```
+
+
+## Number of Awards, BoxOffice, and imbdRatings Pt1
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(plotly)
+mag1 <- ggplot(movie.wide, aes(x = BoxOffice, y = Awards, color = Metascore, label1 = Title, label2=Year, label3=movie.wide$'First Genre', label4=movie.wide$'Second Genre', label5=movie.wide$'Third Genre')) + 
+  geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(movie.wide$BoxOffice, na.rm=TRUE), 
+             linetype = "dashed", color = "blue")
+ggplotly(mag1)
+```
+
+- Top Left Region
+- Films of the imdb Top 250 list which had above avg Awards (29) but below avg Box Office (159M)
+- Those films also show lighter shade of points => higher Metascore ratings
+- Range of Year: 1994-2017
+- We might expect movies with high Award counts to have higher Box Office
+
+
+## Number of Awards, BoxOffice, and imbdRatings Pt2
+
+
+* Top Left Region
+* Films show darker shades of blue => lower ratings with respect to imdb ratings
+* Indicates differences in how people rate between imdb and Metascore
+* Range of Year: 1994-2017
+* Films with Biography or Drama as first genre were mostly clustered in this region
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+mag2 <- ggplot(movie.wide, aes(x = BoxOffice, y = Awards, color = imdbRating, label1=Title, label2=Year, shape=movie.wide$'First Genre', lable3=movie.wide$'Second Genre', label4=movie.wide$'Third Genre')) + geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(movie.wide$BoxOffice, na.rm=TRUE), linetype = "dashed", color = "blue") 
+ggplotly(mag2)
+```
+
+## Nominations and imdbRatings
+
+- Showing the relationship between Nominations and imdbRatings. Seems to be flat overall.
+- Seems that most Nominations that have occurred are with imdbRatings between 8.2-8.5.
+- Range was for all movies from 1900-2019.
+
+```{r, echo = FALSE, warning = FALSE, comment=FALSE, message=FALSE}
+#Creating a plot with lm, to show the relationship between nominations and imdbRatings. 
+ImdbRatingplot <- ggplot(movie.wide, aes(x = Nominations, y = imdbRating)) + geom_point() + geom_smooth(method = "lm") + labs(title = "Nominations vs imdbRating", x = "Nominations", y = "imdbRating") + theme(plot.title = element_text(hjust = 0.5))
+ImdbRatingplot
+```
+
+## Nominations and Year
+
+- Showing the relationship between Nominations and Year of movie release.
+- Nominations for movies exploded around the 1990's. Where we see the first instance of a movie receiving 100 nominations.
+- Range is from 1900 to 2019.
+- We also see an instance where a movie has over 300 nominations.
+```{r, echo = FALSE, warning = FALSE, comment=FALSE, message=FALSE}
+#Creating a plot with lm, to show the relationship between year and nominations.
+Nominationsplot <- ggplot(movie.wide, aes(x = Year, y = Nominations)) + geom_point() + geom_smooth(method = "lm") + labs(title = "Year vs Nominations", x = "Year", y = "Nominations") + theme(plot.title = element_text(hjust = 0.5))
+Nominationsplot
+```
+
+## Nominations and imdbRatings Pt3
+
+- X-Axis as imdbRating
+- Y-Axis as imdbVotes
+- Z-Axis as Nominations
+- Confirms what we have been seeing regarding that the most Nominations that are given to movies are ones that are within the 8.25-8.50 imdbRating.
+```{r, echo = FALSE, warning = FALSE, comment=FALSE, message = FALSE}
+#install.packages("plotly")
+#install.packages("ggplot2")
+#install.packages("tidyverse")
+#install.packages("cowplot")
+#install.packages("dplyr")
+library("dplyr")
+library("ggplot2")
+library("plotly")
+movie.wide %>%
+    sample_n(100) %>%
+    plot_ly(
+        x = ~ imdbRating,
+        y = ~ imdbVotes,
+        z = ~ Nominations,
+        color = ~imdbRating,
+        size = ~80,
+        text = ~paste("Title:", Title, "<br>imdbRating:", imdbRating, "<br>imdbVotes:", imdbVotes, "<br>Nominations:", Nominations),
+        aplha = 0.5,
+        type = "scatter3d",
+        mode = "markers")
+```
+
+## IMDB Ratings and Production Company
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+gg1 <- ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Production)) + geom_col()
+ggplotly(gg1)
+```
+
+
+## Awards and Production
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+gg1 <- ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$Awards, y = movie.wide$Production)) + geom_col() + geom_bar(stat="identity", color="white") + theme_minimal()
+ggplotly(gg1)
+```
+
+
+## Correlation Pt 1
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+library(corrplot)
+## intro graphics with correlation
+movie.numeric <- movie.wide[,c("Year", "Runtime", "Metascore", "imdbRating", 
+                               "imdbVotes", "BoxOffice", "Awards", "Nominations")]
+res <- cor(movie.numeric, use = "pairwise.complete.obs")
+res
+```
+
+## Correlation Pt 2
+
+We can see the plots of correlation and we can observe that years seem to be decently correlated with other variables. On a different note, imdbRatings is poorly correlated with other variables except for imdbVotes. This is interesting since it shows that imdbRatings is not particularly related to other factors that should affect the ratings (ie metascore, awards, and nominations).
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+corrplot(res, type = "full", order = "original", t1.srt = 45)
+```
+
+## ImdbRating and MetaScore
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Metascore, use = "pairwise.complete.obs")
+```
+- Correlation Coefficient: 0.172
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+
+## ImdbRating and Year
+
+- Correlation Coefficient: 0.045
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Year, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## ImdbRating and Runtime
+
+- Correlation Coefficient: 0.248
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Runtime, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Runtime)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+
+## ImdbRating and ImdbVotes
+
+- Correlation Coefficient: 0.657
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$imdbVotes, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= imdbVotes)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## ImdbRating and BoxOffice
+
+- Correlation Coefficient: 0.657
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$BoxOffice, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= BoxOffice)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## ImdbRating and Awards
+
+- Correlation Coefficient: 0.200
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Awards, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Awards)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+
+## ImdbRating and Nominations
+
+- Correlation Coefficient: 0.082
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Nominations, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Nominations)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+Here we have graphed all combinations of imdbRatings to other elements, and we can see that the data is generally distributed randomly except for imdbVoting numbers. However, this also could be part of the effect of missing data. Metascore (70.8%) and boxoffice(30%) is missing some data and the format of awards and nomination could have missed some values or have incorrect values since some movies are recent and the awards and nominations are not updated.
+
+## ImdbRatings and Genre
+
+```{r, cache=TRUE, message=FALSE, echo=FALSE, results='hide'}
+## using long form for genre only
+movie.genre <- movie.wide %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre")
+movie.genre <- movie.genre[!is.na(movie.genre$Genre),]
+```
+
+```{r, cache=TRUE, message=FALSE, echo=FALSE}
+gp <- ggplot(data = movie.genre, aes(x = imdbRating, fill = Genre)) + 
+  geom_histogram(color = "black") +
+  scale_y_continuous(limits= c(0,100), expand = c(0,0)) +
+  theme_light()
+ggplotly(gp)
+```
+
+
+## Contributions
+Melvin's contribution:
+- Melvin considered which variables to analyze (imdb and Metascore ratings with Awards and BoxOffice), and how he would investigate those trends between those variables.
+- Melvin created an interactive scatter plot using ggplot and plotly. His lines of code provide information about each film (represented as points in the scatterplot) through label and shape features of ggplot.
+- He also took into account the story told by the data and possible conclusions that could be drawn from it.
+- The first scatter plot investigates the relationship between Award, BoxOffice, and Metascore, and compares averages of Award counts and BoxOffice for each film.
+- The second scatterplot looks more closely at the top left region of the graph, investigating the genre of films in that area.
+
+Raymond's contribution:
+- explored the relationship between imdbRating and Nominations.
+- The first graph Raymond used ggplot to show the variables of x = nominations and y = imdbRating.
+- The Raymond explored another ggplot, to show the the variables of x = Years and = Nominations.
+- Finally Raymond explored the relationship between imdbRating, imdbVotes, and Nominations via a 3D plotly interactive graph. Where x = imdbRating, y = imdbVotes, z = Nominations.
+- Raymond explained the story that a higher imdbRating do not equate that a movie will have more nominations.
+
+Stephanie's Contribution:
+- Stephanie observed productions companies and found the following:
+--Warner Bros. has the highest ratings and the most awards.
+--Disney doesn't get much recognition in this area. 
+--Production companies with lower (and by low we mean 8.0) ratings collectively, have quite a few awards.
+--Is the population harsher than the Academy?
+ Popolation mean number of votes: 431401.3
+ voters in the Academy: 9,427 as of Dec 2020
+--
+
+The woes of missing data:
+--Where do the awards come from? 
+--Academy awards? BAFTA? Golden Globe?
+--demographics of voters: age, sex, etc...
+--movies with ratings lower than 8.0 for comparison
+
+Paul's Contribution:
+- Data Munging: All of data cleaning and munging process
+- EDA: All of single variable analysis
+- EDA: correlation plot across all numerical values
+- EDA: Analysis on imdbRatings on other numerical values
+- EDA: imdbRatings distribution on genre types
+- Powerpoint: Creating and merging powerpoint into single coherent powerpoint
+- Report: Modify the powerpoint to be in report form
+
