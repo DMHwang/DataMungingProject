@@ -1,0 +1,646 @@
+---
+title: "DataMunging EDA"
+author: "Paul Hwang"
+output: pdf_document
+---
+
+
+```{r}
+library(data.table)
+
+## Loading Data
+data.wide <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFull.csv"
+data.long <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFullLong.csv"
+movie.long <- fread(data.long)
+movie.wide <- fread(data.wide)
+MovieClean <- read.csv("C:/Users/15639/Documents/Applied Stat 1/MovieCleanFull.csv")
+```
+
+
+1-D EDA
+```{r}
+library(ggplot2)
+library(cowplot)
+library(plotly)
+
+## Year
+mean(movie.wide$Year)
+sd(movie.wide$Year)
+
+gp <- ggplot(data = movie.wide, aes(x = Year)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,25), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = Year)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = Year)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  scale_y_continuous(limits= c(0,0.03), expand = c(0,0)) +
+  theme_light()
+```
+
+
+```{r}
+## Runtime
+mean(movie.wide$Runtime)
+sd(movie.wide$Runtime)
+
+gp <- ggplot(data = movie.wide, aes(x = Runtime)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,25), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = Runtime)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = Runtime)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  scale_y_continuous(limits= c(0,0.02), expand = c(0,0)) +
+  theme_light()
+```
+
+```{r}
+library(plotly)
+library(plyr)
+
+## Directors
+length(unique(movie.wide$Director))
+
+table.dir <- plyr::count(movie.wide$Director)
+gp <- ggplot(data = movie.wide, aes(x=Director)) +
+  geom_bar(stat = "count",color = "black", fill = "lightblue")
+ggplotly(gp)
+
+table.dir[table.dir$freq > 3,]
+
+gp2 <- ggplot(data = table.dir[table.dir$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity",color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp2)
+```
+
+
+```{r}
+## Writers
+length(unique(movie.wide$Writer))
+
+table.wri <- plyr::count(movie.wide$Writer)
+gp <- ggplot(data = table.wri, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+ggplotly(gp)
+
+table.wri[table.wri$freq > 3,]
+gp2 <- ggplot(data = table.wri[table.wri$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+ggplotly(gp2)
+```
+
+
+```{r}
+## Metascore
+mean(movie.wide$Metascore, na.rm = TRUE)
+sd(movie.wide$Metascore, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = Metascore)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,15), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = Metascore)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = Metascore)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  scale_y_continuous(limits= c(0,0.05), expand = c(0,0)) +
+  theme_light()
+```
+
+```{r}
+## imbdRating
+mean(movie.wide$imdbRating)
+sd(movie.wide$imdbRating)
+
+gp <- ggplot(data = movie.wide, aes(x = imdbRating)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,40), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = imdbRating)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = imdbRating)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  scale_y_continuous(limits= c(0,7.5), expand = c(0,0)) +
+  theme_light()
+```
+
+```{r}
+## imbdVotes
+mean(movie.wide$imdbVotes, na.rm = TRUE)
+sd(movie.wide$imbdVotes)
+
+gp <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,40), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = imdbVotes)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  theme_light()
+```
+
+```{r}
+## boxoffice
+mean(movie.wide$BoxOffice, na.rm = TRUE)
+sd(movie.wide$BoxOffice, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = BoxOffice)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,15), expand = c(0,0)) +
+  theme_light()
+gp2 <- ggplot(data = movie.wide, aes(x = BoxOffice)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = BoxOffice)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  theme_light()
+```
+
+```{r}
+## Production
+length(unique(movie.wide$Production))
+
+table.pro <- plyr::count(movie.wide$Production)
+gp <- ggplot(data = table.pro, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+ggplotly(gp)
+
+table.pro[table.pro$freq > 3,]
+
+gp2 <- ggplot(data = table.pro[table.pro$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp2)
+```
+
+```{r}
+library(tidyr)
+## Actors
+actors.data <- movie.wide[,c("First Actor", "Second Actor", "Third Actor", "Fourth Actor")]
+actors <- actors.data %>% pivot_longer(
+  cols=c("First Actor", "Second Actor", "Third Actor", "Fourth Actor"),
+  names_to = "Actors Type",
+  values_to = "Actor"
+)
+
+length(unique(actors$Actor))
+
+table.act <- plyr::count(actors$Actor)
+gp <- ggplot(data = table.act, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue")
+ggplotly(gp)
+
+table.act[table.act$freq > 3,]
+
+gp2 <- ggplot(data = table.act[table.act$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp2)
+```
+
+
+```{r}
+## awards
+mean(movie.wide$Awards, na.rm = TRUE)
+sd(movie.wide$Awards, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = Awards)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,30), expand = c(0,0)) +
+  theme_light()
+ggplotly(gp)
+
+gp2 <- ggplot(data = movie.wide, aes(x = Awards)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = Awards)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  theme_light()
+
+movie.wide[movie.wide$Awards > 100,c("Title", "Awards", "imdbRating")]
+```
+
+```{r}
+## Nominations
+mean(movie.wide$Nominations, na.rm = TRUE)
+sd(movie.wide$Nominations, na.rm = TRUE)
+
+gp <- ggplot(data = movie.wide, aes(x = Nominations)) + 
+  geom_histogram(color = "black", fill = "lightblue") +
+  scale_y_continuous(limits= c(0,30), expand = c(0,0)) +
+  theme_light()
+ggplotly(gp)
+
+gp2 <- ggplot(data = movie.wide, aes(x = Nominations)) + 
+  geom_boxplot(color = "black", fill = "lightblue") +
+  theme_void()
+plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
+
+ggplot(data = movie.wide, aes(x = Nominations)) + 
+  geom_histogram(aes(y = ..density..), color = "black", fill = "lightblue") + 
+  geom_density(alpha = 0.1, fill = "red") +
+  theme_light()
+
+movie.wide[movie.wide$Nominations > 100,c("Title", "Nominations", "imdbRating")]
+```
+```{r}
+## showing deviations for awards and nominations
+movie.wide[movie.wide$Awards > 100 | movie.wide$Nominations > 100,
+           c("Title", "Awards", "Nominations", "imdbRating")]
+movie.wide[movie.wide$Awards > 100 & movie.wide$Nominations > 100,
+           c("Title", "Awards", "Nominations", "imdbRating")]
+movie.wide[movie.wide$Awards > 100 & movie.wide$Nominations < 100,
+           c("Title", "Awards", "Nominations", "imdbRating")]
+```
+
+```{r}
+## Genre
+genre.data <- movie.wide[,c("First Genre", "Second Genre", "Third Genre")]
+genres <- genre.data %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre"
+)
+
+length(unique(genres$Genre))
+
+table.gen <- na.omit(plyr::count(genres$Genre))
+
+gp <- ggplot(data = table.gen, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,180), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp)
+```
+
+```{r}
+## Language
+lang.data <- movie.wide[,c("l1","l2","l3","l4","l5","l6","l7")]
+language <- lang.data %>% pivot_longer(
+  cols=c("l1","l2","l3","l4","l5","l6","l7"),
+  names_to = "Language Type",
+  values_to = "Language"
+)
+
+length(unique(language$Language))
+
+table.lang <- na.omit(plyr::count(language$Language))
+
+gp <- ggplot(data = table.lang, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp)
+
+table.lang[table.lang$freq > 3,]
+
+gp2 <- ggplot(data = table.lang[table.lang$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp2)
+```
+
+```{r}
+## Country
+coun.data <- movie.wide[,c("c1","c2","c3","c4","c5","c6","c7","c8","c9")]
+country <- coun.data %>% pivot_longer(
+  cols=c("c1","c2","c3","c4","c5","c6","c7","c8","c9"),
+  names_to = "Country Type",
+  values_to = "Country"
+)
+
+length(unique(country$Country))
+
+table.coun <- na.omit(plyr::count(country$Country))
+gp <- ggplot(data = table.coun, aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp)
+
+table.coun[table.coun$freq > 3,]
+gp2 <- ggplot(data = table.coun[table.coun$freq > 3,], aes(x=x, y=freq)) +
+  geom_bar(stat = "identity", color = "black", fill = "lightblue") +
+  scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
+  theme(axis.text.x = element_text(angle = 90))
+ggplotly(gp2)
+```
+
+
+2D analysis
+
+```{r}
+library(corrplot)
+## intro graphics with correlation
+movie.numeric <- movie.wide[,c("Year", "Runtime", "Metascore", "imdbRating", 
+                               "imdbVotes", "BoxOffice", "Awards", "Nominations")]
+res <- cor(movie.numeric, use = "pairwise.complete.obs")
+res
+corrplot(res, type = "full", order = "original", t1.srt = 45)
+```
+
+```{r}
+## using long form for genre only
+movie.genre <- movie.wide %>% pivot_longer(
+  cols=c("First Genre", "Second Genre", "Third Genre"),
+  names_to = "Genre Type",
+  values_to = "Genre")
+movie.genre <- movie.genre[!is.na(movie.genre$Genre),]
+```
+
+
+```{r}
+## Metascore Scatterplots "Year", "Runtime", "imdbRating", "imdbVotes", "BoxOffice", "Awards", "Nominations"
+
+cor(movie.wide$Metascore, movie.wide$Year, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$Runtime, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Runtime)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$imdbRating, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= imdbRating)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$imdbVotes, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= imdbVotes)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$BoxOffice, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= BoxOffice)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$Awards, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Awards)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$Metascore, movie.wide$Nominations, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=Metascore, x= Nominations)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+```{r}
+## imdbRating Scatterplots "Year", "Runtime", "Metascore", "imdbVotes", "BoxOffice", "Awards", "Nominations"
+
+cor(movie.wide$imdbRating, movie.wide$Year, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Runtime, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Runtime)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Metascore, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$imdbVotes, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= imdbVotes)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$BoxOffice, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= BoxOffice)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Awards, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Awards)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+cor(movie.wide$imdbRating, movie.wide$Nominations, use = "pairwise.complete.obs")
+ggplot(data = movie.wide, aes(y=imdbRating, x= Nominations)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+```{r}
+## imdbRating Scatterplots "Year", "Runtime", "Metascore", "imdbVotes", "BoxOffice", "Awards", "Nominations"
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Runtime)) +
+  geom_point() + geom_smooth() + theme_bw()
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = imdbVotes)) + 
+  geom_point() + geom_smooth() + theme_bw()
+
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = BoxOffice)) + 
+  geom_point() + geom_smooth() + theme_bw()
+
+gp1 <- ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Awards)) + 
+  geom_point() + geom_smooth() + theme_bw()
+ggplotly(gp1)
+
+gp2 <- ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore, color = Nominations)) + 
+  geom_point() + geom_smooth() + theme_bw()
+ggplotly(gp2)
+
+```
+
+
+```{r}
+## model creating Metascore
+meta.lm2 <-lm(data = movie.wide, Metascore ~ 1)
+meta.lm <- lm(data = movie.wide, Metascore ~ Year + Runtime + 
+                 imdbRating + imdbVotes + BoxOffice + Awards + Nominations)
+summary(meta.lm)
+
+meta.lm3 <- lm(data = movie.wide, Metascore ~ Year + Runtime + 
+                 imdbRating + imdbVotes + BoxOffice + Awards * Nominations)
+summary(meta.lm3)
+
+step(meta.lm2, Metascore ~ Year + Runtime + 
+                 imdbRating + imdbVotes + BoxOffice + Awards + Nominations, 
+     direction = "forward")
+
+step(meta.lm, Metascore ~ 1, direction = "both")
+
+## model creating imdbRating
+imdb.lm2 <-lm(data = movie.wide, imdbRating ~ 1)
+imdb.lm <- lm(data = movie.wide, imdbRating ~ Year + Runtime + 
+                 Metascore + imdbVotes + BoxOffice + Awards + Nominations)
+summary(imdb.lm)
+
+step(imdb.lm, imdbRating ~ 1, direction = "backward")
+```
+
+```{r}
+## model creating imdbRating with only full values
+imdb.lm2 <-lm(data = movie.genre, imdbRating ~ 1)
+imdb.lm <- lm(data = movie.genre, imdbRating ~ Year + Runtime + 
+                 imdbVotes + Awards + Nominations)
+summary(imdb.lm)
+
+step(imdb.lm2, imdbRating ~ Year + Runtime + 
+                  imdbVotes + Awards + Nominations, 
+     direction = "forward")
+```
+
+```{r}
+## Metascore
+gp <- ggplot(data = movie.genre, aes(x = Metascore, fill = Genre)) + 
+  geom_histogram(color = "black") +
+  scale_y_continuous(limits= c(0,40), expand = c(0,0)) +
+  theme_light()
+gp
+
+gp2 <- ggplot(data = movie.genre, aes(x = Metascore)) + 
+  geom_freqpoly(aes(colour = Genre)) +
+  theme_void()
+gp2
+ggplotly(gp2)
+
+```
+
+```{r}
+## imdbRating
+gp <- ggplot(data = movie.genre, aes(x = imdbRating, fill = Genre)) + 
+  geom_histogram(color = "black") +
+  scale_y_continuous(limits= c(0,100), expand = c(0,0)) +
+  theme_light()
+gp
+
+gp2 <- ggplot(data = movie.genre, aes(x = imdbRating)) + 
+  geom_freqpoly(aes(colour = Genre)) +
+  theme_void()
+gp2
+ggplotly(gp2)
+
+```
+
+
+## Association between number of Awards and BoxOffice with ratings
+
+* Top Left Region
+* Films of the imdb Top 250 list which had above avg Awards (29) but below avg Box Office (159M)
+* Those films also show lighter shade of points => higher Metascore ratings
+* Range of Year: 1994-2017
+* We might expect movies with high Award counts to have higher Box Office 
+
+```{r}
+mag1 <- ggplot(MovieClean, aes(x = BoxOffice, y = Awards, color = Metascore, label1 = Title, label2=Year, label3=First.Genre, label4=Second.Genre, label5=Third.Genre)) + geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(MovieClean$BoxOffice, na.rm=TRUE), linetype = "dashed", color = "blue")
+
+ggplotly(mag1)
+  
+```
+
+* Top Left Region
+* Films show darker shades of blue => lower ratings with respect to imdb ratings
+* Indicates differences in how people rate between imdb and Metascore
+* Range of Year: 1994-2017
+* Films with Biography or Drama as first genre were mostly clustered in this region
+
+```{r}
+mag2 <- ggplot(MovieClean, aes(x = BoxOffice, y = Awards, color = imdbRating, label1=Title, label2=Year, shape=First.Genre, lable3=Second.Genre, label4=Third.Genre)) + geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(MovieClean$BoxOffice, na.rm=TRUE), linetype = "dashed", color = "blue") 
+
+ggplotly(mag2)
+```
+
+## Association between Nominations and imdbRatings
+
+*Showing the relationship between Nominations and imdbRatings. Seems to be flat overall. 
+*Seems that most Nominations that have occurred are with imdbRatings between 8.2-8.5.
+*Range was for all movies from 1900-2019. 
+
+```{r}
+
+
+#Creating a plot with lm, to show the relationship between nominations and imdbRatings. 
+
+
+ImdbRatingplot <- ggplot(MovieClean, aes(x = Nominations, y = imdbRating)) + geom_point() + geom_smooth(method = "lm") + labs(title = "Nominations vs imdbRating", x = "Nominations", y = "imdbRating") + theme(plot.title = element_text(hjust = 0.5))
+
+ImdbRatingplot
+
+
+```
+
+*Showing the relationship between Nominations and Year of movie release. 
+*Nominations for movies exploded around the 1990's. Where we see the first instance of a movie recieving 100 nominations. 
+*Range is from 1900 to 2019. 
+*We also see an instance where a movie has over 300 nominations. 
+```{r}
+#Creating a plot with lm, to show the relationship between year and nominations.
+
+
+Nominationsplot <- ggplot(MovieClean, aes(x = Year, y = Nominations)) + geom_point() + geom_smooth(method = "lm") + labs(title = "Year vs Nominations", x = "Year", y = "Nominations") + theme(plot.title = element_text(hjust = 0.5))
+
+Nominationsplot
+
+```
+
+*X-Axis as imdbRating
+*Y-Axis as imdbVotes
+*Z-Axis as Nominations
+*Confirms what we have been seeing regarding that the most Nominations that are given to movies are ones that are within the 8.25-8.50 imdbRating. 
+```{r}
+
+#install.packages("plotly")
+#install.packages("ggplot2")
+#install.packages("tidyverse")
+#install.packages("cowplot")
+#install.packages("dplyr")
+
+library("dplyr")
+library("ggplot2")
+library("plotly")
+
+MovieClean %>%
+    sample_n(100) %>%
+    plot_ly(
+        x = ~ imdbRating,
+        y = ~ imdbVotes,
+        z = ~ Nominations,
+        color = ~imdbRating,
+        size = ~80,
+        text = ~paste("Title:", Title, "<br>imdbRating:", imdbRating, "<br>imdbVotes:", imdbVotes, "<br>Nominations:", Nominations),
+        aplha = 0.5,
+        type = "scatter3d",
+        mode = "markers")
+
+
+```
+
+
+
+
+
+
