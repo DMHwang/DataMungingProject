@@ -1,5 +1,5 @@
 ---
-title: "DataMunging PPT"
+title: "Top Movies"
 author: "Melvin Adkins, Raymond Blaha, Paul Hwang, Stephanie Diaz Ortega"
 output: ioslides_presentation
 fontsize: 12pt
