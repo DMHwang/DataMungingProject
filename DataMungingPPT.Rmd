@@ -46,6 +46,14 @@ fontsize: 12pt
 - DVD
 - Website
 
+## DataMunging Pt4
+
+### Consistency and Completeness
+```{r, echo = FALSE, message=FALSE, cache=TRUE}
+#1-colSums(is.na(df)/lengths(df))
+1-colSums(is.na(movie.wide)/lengths(movie.wide))
+```
+
 ## Exploratory Data Analysis
 
 ### 1D Analysis
@@ -599,4 +607,51 @@ movie.wide %>%
         mode = "markers")
 ```
 
+#IMBD Ratings and Production Company
 
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Production)) + geom_col()
+```
+
+
+# ImBD Ratings and Writers
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Writer)) + geom_col()
+```
+
+
+## What is this????
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+barplot(table(movie.wide$Title), col=c("lightblue","darkred"),main="Low (0) vs. High (1) Temp",ylab="Count",horiz=T)
+
+table(movie.wide$Title)
+```
+
+## ImdbRating and Runtime
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Runtime)
+```
+- Correlation Coefficient: 0.248
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+plot(movie.wide$imdbRating, movie.wide$Runtime)
+```
+
+## Awards and Production
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$Awards, y = movie.wide$Production)) + geom_col() + geom_bar(stat="identity", color="white") + theme_minimal()
+```
+
+## Award and imdbRating
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, results='hide'}
+cor(movie.wide$Awards, movie.wide$imdbRating)
+```
+- Correlation Coefficient: 0.200
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+plot(movie.wide$Awards, movie.wide$imdbRating)
+```
