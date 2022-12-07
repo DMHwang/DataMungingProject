@@ -790,13 +790,6 @@ Stephanie's Contribution:
 --Is the population harsher than the Academy?
  Popolation mean number of votes: 431401.3
  voters in the Academy: 9,427 as of Dec 2020
---
-
-The woes of missing data:
---Where do the awards come from? 
---Academy awards? BAFTA? Golden Globe?
---demographics of voters: age, sex, etc...
---movies with ratings lower than 8.0 for comparison
 
 Paul's Contribution:
 - Data Munging: All of data cleaning and munging process
