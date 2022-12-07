@@ -60,7 +60,9 @@ movie.wide <- fread(data.wide)
 ### Consistency and Completeness
 ```{r, echo = FALSE, message=FALSE, cache=TRUE}
 #1-colSums(is.na(df)/lengths(df))
-1-colSums(is.na(movie.wide)/lengths(movie.wide))
+cc <- 1-colSums(is.na(movie.wide)/lengths(movie.wide))
+cc
+
 ```
 
 ## Exploratory Data Analysis
@@ -649,15 +651,97 @@ res
 
 ## Correlation Pt 2
 
-```{r, warning=FALSE, echo=FALSE, message=FALSE, comment=FALSE, cache=TRUE}
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
 corrplot(res, type = "full", order = "original", t1.srt = 45)
 ```
 
+## ImdbRating and MetaScore
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Metascore, use = "pairwise.complete.obs")
+```
+- Correlation Coefficient: 0.172
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Metascore)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
 
 
+## ImdbRating and Year
+
+- Correlation Coefficient: 0.045
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Year, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Year)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## ImdbRating and Runtime
+
+- Correlation Coefficient: 0.248
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Runtime, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Runtime)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
 
 
+## ImdbRating and Runtime
+
+- Correlation Coefficient: 0.657
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$imdbVotes, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= imdbVotes)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## ImdbRating and BoxOffice
+
+- Correlation Coefficient: 0.657
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$BoxOffice, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= BoxOffice)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## ImdbRating and Awards
+
+- Correlation Coefficient: 0.200
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Awards, use = "pairwise.complete.obs")
+```
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Awards)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
 
 
+## ImdbRating and Nominations
 
+- Correlation Coefficient: 0.082
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE, results='hide'}
+cor(movie.wide$imdbRating, movie.wide$Nominations, use = "pairwise.complete.obs")
+```
 
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+ggplot(data = movie.wide, aes(y=imdbRating, x= Nominations)) + geom_point() + 
+  geom_smooth() + theme_bw()
+```
+
+## Questions
+
+## Thank You
