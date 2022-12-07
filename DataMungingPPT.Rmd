@@ -84,10 +84,12 @@ library(cowplot)
 
 gp <- ggplot(data = movie.wide, aes(x = Year)) + 
   geom_histogram(color = "black", fill = "lightblue") +
-  scale_y_continuous(limits= c(0,25), expand = c(0,0)) +
+  scale_x_continuous(limits= c(1920,2020)) +
+  scale_y_continuous(limits= c(0,20), expand = c(0,0)) +
   theme_light()
 gp2 <- ggplot(data = movie.wide, aes(x = Year)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(1920,2020)) +
   theme_void()
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
@@ -107,10 +109,12 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 gp <- ggplot(data = movie.wide, aes(x = Runtime)) + 
   geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,300)) +
   scale_y_continuous(limits= c(0,25), expand = c(0,0)) +
   theme_light()
 gp2 <- ggplot(data = movie.wide, aes(x = Runtime)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,300)) +
   theme_void()
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
@@ -163,9 +167,6 @@ gp <- ggplot(data = table.wri, aes(x=x, y=freq)) +
 # ggplotly(gp)
 
 table.wri[table.wri$freq > 3,]
-gp2 <- ggplot(data = table.wri[table.wri$freq > 3,], aes(x=x, y=freq)) +
-  geom_bar(stat = "identity", color = "black", fill = "lightblue") + xlab("Writers")
-ggplotly(gp2)
 ```
 
 ## Writers Pt2
@@ -184,10 +185,12 @@ ggplotly(gp2)
 
 gp <- ggplot(data = movie.wide, aes(x = Metascore)) + 
   geom_histogram(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,100)) +
   scale_y_continuous(limits= c(0,15), expand = c(0,0)) +
   theme_light()
 gp2 <- ggplot(data = movie.wide, aes(x = Metascore)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(50,100)) +
   theme_void()
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
@@ -206,9 +209,13 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 gp <- ggplot(data = movie.wide, aes(x = imdbRating)) + 
   geom_histogram(color = "black", fill = "lightblue") +
-  scale_y_continuous(limits= c(0,40), expand = c(0,0)) +
+  scale_x_continuous(limits = c(8, 10)) +
+  scale_y_continuous(limits= c(0,75), expand = c(0,0)) +
   theme_light()
-gp2 <- ggplot(data = movie.wide, aes(x = imdbRating)) + 
+## ggplotly(gp)
+
+gp2 <- ggplot(data = movie.wide, aes(x = imdbRating)) +
+  scale_x_continuous(limits = c(8, 10)) +
   geom_boxplot(color = "black", fill = "lightblue") +
   theme_void()
 
@@ -230,10 +237,12 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 gp <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
   geom_histogram(color = "black", fill = "lightblue") +
-  scale_y_continuous(limits= c(0,30), expand = c(0,0)) +
+  scale_x_continuous(limits = c(0, 2250000)) +
+  scale_y_continuous(limits= c(0,60), expand = c(0,0)) +
   theme_light()
 gp2 <- ggplot(data = movie.wide, aes(x = imdbVotes)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(0, 2250000)) +
   theme_void()
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
@@ -330,13 +339,16 @@ ggplotly(gp2)
 
 gp <- ggplot(data = movie.wide, aes(x = Awards)) + 
   geom_histogram(color = "black", fill = "lightblue") +
-  scale_y_continuous(limits= c(0,30), expand = c(0,0)) +
+  scale_x_continuous(limits = c(-10, 250)) +
+  scale_y_continuous(limits = c(0,60), expand = c(0,0)) +
   theme_light()
 # ggplotly(gp)
 
 gp2 <- ggplot(data = movie.wide, aes(x = Awards)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits = c(-10, 250)) +
   theme_void()
+
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 # ggplot(data = movie.wide, aes(x = Awards)) + 
@@ -357,15 +369,16 @@ head(movie.wide[movie.wide$Awards > 75 ,c("Title", "Awards", "imdbRating")])
 ```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$Nominations, na.rm = TRUE)
 # sd(movie.wide$Nominations, na.rm = TRUE)
-
 gp <- ggplot(data = movie.wide, aes(x = Nominations)) + 
   geom_histogram(color = "black", fill = "lightblue") +
-  scale_y_continuous(limits= c(0,30), expand = c(0,0)) +
+  scale_x_continuous(limits= c(-20,350)) +
+  scale_y_continuous(limits= c(0,60), expand = c(0,0))  +
   theme_light()
 # ggplotly(gp)
 
 gp2 <- ggplot(data = movie.wide, aes(x = Nominations)) + 
   geom_boxplot(color = "black", fill = "lightblue") +
+  scale_x_continuous(limits= c(-20,350)) +
   theme_void()
 plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
@@ -390,19 +403,19 @@ head(movie.wide[movie.wide$Awards > 75 | movie.wide$Nominations > 120,
 ```
 
 ## Awards and Nominations Pt2
-- 19 movies with 75+ awards and 120+ nominations
+- 6 movies with 75- awards and 120+ nominations
 ```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
-head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations > 120,
+head(movie.wide[movie.wide$Awards < 75 & movie.wide$Nominations > 120,
            c("Title", "Awards", "Nominations", "imdbRating")])
 ```
 
 ## Awards and Nominations Pt3
-- 9 movies with 75+ awards and 120- nominations
+- 19 movies with 75+ awards and 120- nominations
 ```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
-movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations < 120,
-           c("Title", "Awards", "Nominations", "imdbRating")]
+head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations > 120,
+           c("Title", "Awards", "Nominations", "imdbRating")])
 ```
 
 ## Awards and Nominations Pt4
