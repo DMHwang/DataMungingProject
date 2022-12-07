@@ -652,7 +652,7 @@ res
 
 ## Correlation Pt 2
 
-We can see the plots of correlation and we can observe that years seem to be decently correlated with other variables. On a different note, imdbRatings is poorly correlated with other variables except for imdbVotes. This is interesting since it shows that imdbRatings is not particularly related to other factors that should affect the ratings (ie metascore, awards, and nominations).
+We can see the plots of correlation and we can observe that years seem to be decently correlated with other variables. On a different note, imdbRatings is poorly correlated with other variables except for imdbVotes. This is interesting since it shows that imdbRatings is not particularly related to other factors that should affect the ratings (ie metascore, awards, and nominations). However, we will be choosing imdbRatings as our values of interest since the question I want to ask is what makes a movie great, and a metric for good movie is ratings.
 
 ```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
 corrplot(res, type = "full", order = "original", t1.srt = 45)
