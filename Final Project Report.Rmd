@@ -783,13 +783,10 @@ Raymond's contribution:
 - Raymond explained the story that a higher imdbRating do not equate that a movie will have more nominations.
 
 Stephanie's Contribution:
-- Stephanie observed productions companies and found the following:
---Warner Bros. has the highest ratings and the most awards.
---Disney doesn't get much recognition in this area. 
---Production companies with lower (and by low we mean 8.0) ratings collectively, have quite a few awards.
---Is the population harsher than the Academy?
- Popolation mean number of votes: 431401.3
- voters in the Academy: 9,427 as of Dec 2020
+- Stephanie began by exploring the data set, considering the stories each variables could tell and asking questions about how we could best analyze and answer the questions.
+- She applied the material that we previously learned about in class, using the function she created for our past assignment:  > 1-colSums(is.na(df)/lengths(df)). This function measures the completeness and consistency of the data.For every column, this will give you the ratio of NA (missing values) to the total values, subtracted from 1, for each column(variable)--this works for both completeness and consistency.
+- Stephanie chose to investigate the relationship between IMDb ratings by each production company, and so she constructed a bar plot, y= production, x= IMDbratings 
+- Stephanie also considered the awards given to the different types of production companies and how this had a connection to the ImdbRatings, and so she created a bar plot that shows the amount of awards per film company.
 
 Paul's Contribution:
 - Data Munging: All of data cleaning and munging process
