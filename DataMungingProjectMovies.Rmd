@@ -4,6 +4,34 @@ output: html_document
 date: "2022-12-05"
 ---
 
+TALKING POINTS:
+IMDb DOB Oct. 1990
+
+"...Even the vaunted IMDb Top 250 — nominally the best-liked films ever — is worth taking with 250 grains of salt."--to quote Walt Hickey
+
+How much trust do you put on ImDB ratings?
+--Should you? 
+--What if someone abosolutely hates Tom Hiddleston? or Henry Cavill?
+--What about movies from the 50's, 60's,...?
+--What is the distribution of the data? 
+--demographics
+
+
+Observations:
+--Warner Bros. has the highest ratings and the most awards.
+--Disney doesn't get much recognition in this area. 
+--Production companies with lower (and by low we mean 8.0) ratings collectively, have quite a few awards.
+--Is the population harsher than the Academy?
+ Popolation mean number of votes: 431401.3
+ voters in the Academy: 9,427 as of Dec 2020
+--
+
+The woes of missing data:
+--Where do the awards come from? 
+--Academy awards? BAFTA? Golden Globe?
+--demographics of voters: age, sex, etc...
+--movies with ratings lower than 8.0 for comparison
+
 
 
 
