@@ -591,17 +591,19 @@ movie.wide %>%
         mode = "markers")
 ```
 
-## IMBD Ratings and Production Company
+## IMDB Ratings and Production Company
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
-ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Production)) + geom_col()
+gg1 <- ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Production)) + geom_col()
+ggplotly(gg1)
 ```
 
 
 ## Awards and Production
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
-ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$Awards, y = movie.wide$Production)) + geom_col() + geom_bar(stat="identity", color="white") + theme_minimal()
+gg1 <- ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$Awards, y = movie.wide$Production)) + geom_col() + geom_bar(stat="identity", color="white") + theme_minimal()
+ggplotly(gg1)
 ```
 
 
