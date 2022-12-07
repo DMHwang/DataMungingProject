@@ -403,18 +403,18 @@ head(movie.wide[movie.wide$Awards > 75 | movie.wide$Nominations > 120,
 ```
 
 ## Awards and Nominations Pt2
-- 6 movies with 75- awards and 120+ nominations
+- 19 movies with 75+ awards and 120+ nominations
 ```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
-head(movie.wide[movie.wide$Awards < 75 & movie.wide$Nominations > 120,
+head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations > 120,
            c("Title", "Awards", "Nominations", "imdbRating")])
 ```
 
 ## Awards and Nominations Pt3
-- 19 movies with 75+ awards and 120- nominations
+- 9 movies with 75+ awards and 120- nominations
 ```{r, echo = FALSE, warning=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
-head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations > 120,
+head(movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations < 120,
            c("Title", "Awards", "Nominations", "imdbRating")])
 ```
 
@@ -744,6 +744,6 @@ ggplotly(gp)
 ```
 
 
-## Questions
+## Questions?
 
 ## Thank You
