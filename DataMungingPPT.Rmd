@@ -2,6 +2,7 @@
 title: "DataMunging PPT"
 author: "Melvin Adkins, Raymond Blaha, Paul Hwang, Stephanie Diaz Ortega"
 output: ioslides_presentation
+fontsize: 12pt
 ---
 
 ## IMDB Top 250 Movies
@@ -65,7 +66,7 @@ output: ioslides_presentation
 ## Exploratory Data Analysis
 - 1D Analysis
 
-```{r, echo = FALSE, results=FALSE, warning=FALSE}
+```{r, echo = FALSE, results=FALSE, message=FALSE, warning=FALSE, comment=FALSE, cache = TRUE}
 library(data.table)
 
 ## Loading Data
@@ -78,7 +79,7 @@ movie.wide <- fread(data.wide)
 - Mean: 1982.676
 - SD: 24.80921
 
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 library(ggplot2)
 library(cowplot)
 
@@ -105,7 +106,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 - Mean: 126.808
 - SD: 29.76338
 
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$Runtime)
 # sd(movie.wide$Runtime)
 
@@ -128,7 +129,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ## Directors Pt1
 - Unique Directors: 155
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 library(plotly)
 library(plyr)
 
@@ -141,12 +142,12 @@ ggplotly(gp)
 ```
 
 ## Directors Pt2
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 table.dir[table.dir$freq > 3,]
 ```
 
 ## Directors Pt3
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 gp2 <- ggplot(data = table.dir[table.dir$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity",color = "black", fill = "lightblue") +
   theme(axis.text.x = element_text(angle = 90)) + xlab("Directors")
@@ -157,7 +158,7 @@ ggplotly(gp2)
 ## Writers
 - Unique Writers: 213
 
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # length(unique(movie.wide$Writer))
 
 table.wri <- plyr::count(movie.wide$Writer)
@@ -174,7 +175,7 @@ ggplotly(gp2)
 ## Metascore
 - Mean: 80.0452
 - SD: 11.03034
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$Metascore, na.rm = TRUE)
 # sd(movie.wide$Metascore, na.rm = TRUE)
 
@@ -197,7 +198,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 ## imbdRating
 - Mean: 8.244
 - SD: 0.2457347
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$imdbRating)
 # sd(movie.wide$imdbRating)
 
@@ -222,7 +223,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 ## imbdVotes
 - Mean: 431401.3
 - SD: 367703.3
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$imdbVotes, na.rm = TRUE)
 # sd(movie.wide$imdbVotes, na.rm = TRUE)
 
@@ -244,7 +245,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 ## boxoffice
 - Mean: 158727934
 - SD: 169133912
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$BoxOffice, na.rm = TRUE)
 # sd(movie.wide$BoxOffice, na.rm = TRUE)
 
@@ -265,7 +266,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 
 ## Production Pt1
 - Unique Productions: 89
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # length(unique(movie.wide$Production))
 
 table.pro <- plyr::count(movie.wide$Production)
@@ -282,7 +283,7 @@ table.pro[table.pro$freq > 3,]
 ```
 
 ## Production Pt2
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # length(unique(movie.wide$Production))
 
 # table.pro <- plyr::count(movie.wide$Production)
@@ -300,7 +301,7 @@ ggplotly(gp2)
 
 ## Actors and Actress Pt1
 - Actors and Actress: 773
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 library(tidyr)
 actors.data <- movie.wide[,c("First Actor", "Second Actor", "Third Actor", "Fourth Actor")]
 actors <- actors.data %>% pivot_longer(
@@ -325,7 +326,7 @@ table.act[table.act$freq > 3,]
 ```
 
 ## Actors and Actress Pt2
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 gp2 <- ggplot(data = table.act[table.act$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
   theme(axis.text.x = element_text(angle = 90)) + xlab("Actors and Actresses")
@@ -335,7 +336,7 @@ ggplotly(gp2)
 ## Awards Pt1
 - Mean: 29.44
 - SD: 40.12799
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$Awards, na.rm = TRUE)
 # sd(movie.wide$Awards, na.rm = TRUE)
 
@@ -357,7 +358,7 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 ```
 
 ## Awards Pt2
-```{r}
+```{r, echo = FALSE, warning = FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 movie.wide[movie.wide$Awards > 75 ,c("Title", "Awards", "imdbRating")]
 ```
 
@@ -365,7 +366,7 @@ movie.wide[movie.wide$Awards > 75 ,c("Title", "Awards", "imdbRating")]
 ## Nominations Pt1
 - Mean: 40.308
 - SD: 52.18792
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 # mean(movie.wide$Nominations, na.rm = TRUE)
 # sd(movie.wide$Nominations, na.rm = TRUE)
 
@@ -387,26 +388,26 @@ plot_grid(gp, gp2, ncol = 1, align = "v", rel_heights = c(4,1), axis = "lr")
 ```
 
 ## Nominations Pt2
-```{r}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 movie.wide[movie.wide$Nominations > 120,c("Title", "Nominations", "imdbRating")]
 ```
 
 ## Awards and Nominations Pt1
-```{r}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
 movie.wide[movie.wide$Awards > 75 | movie.wide$Nominations > 120,
            c("Title", "Awards", "Nominations", "imdbRating")]
 ```
 
 ## Awards and Nominations Pt2
-```{r}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
 movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations > 120,
            c("Title", "Awards", "Nominations", "imdbRating")]
 ```
 
 ## Awards and Nominations Pt3
-```{r}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 ## showing deviations for awards and nominations
 movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations < 120,
            c("Title", "Awards", "Nominations", "imdbRating")]
@@ -415,7 +416,7 @@ movie.wide[movie.wide$Awards > 75 & movie.wide$Nominations < 120,
 
 ## Genre
 - Unique Genres: 24
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 genre.data <- movie.wide[,c("First Genre", "Second Genre", "Third Genre")]
 genres <- genre.data %>% pivot_longer(
   cols=c("First Genre", "Second Genre", "Third Genre"),
@@ -436,7 +437,7 @@ ggplotly(gp)
 
 ## Language Pt1
 - Unique Language: 44
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 lang.data <- movie.wide[,c("l1","l2","l3","l4","l5","l6","l7")]
 language <- lang.data %>% pivot_longer(
   cols=c("l1","l2","l3","l4","l5","l6","l7"),
@@ -460,7 +461,7 @@ table.lang[table.lang$freq > 3,]
 
 
 ## Language Pt2
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 gp2 <- ggplot(data = table.lang[table.lang$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
   scale_y_continuous(limits = c(0,260), expand = c(0,0)) + 
@@ -470,7 +471,7 @@ ggplotly(gp2)
 
 ## Country Pt1
 - Unique Countries: 31
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 coun.data <- movie.wide[,c("c1","c2","c3","c4","c5","c6","c7","c8","c9")]
 country <- coun.data %>% pivot_longer(
   cols=c("c1","c2","c3","c4","c5","c6","c7","c8","c9"),
@@ -491,7 +492,7 @@ table.coun[table.coun$freq > 3,]
 ```
 
 ## Country Pt2
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, warning=FALSE, comment=FALSE, cache = TRUE, message=FALSE}
 gp2 <- ggplot(data = table.coun[table.coun$freq > 3,], aes(x=x, y=freq)) +
   geom_bar(stat = "identity", color = "black", fill = "lightblue") +
   scale_y_continuous(limits = c(0,260), expand = c(0,0)) +
@@ -499,26 +500,43 @@ gp2 <- ggplot(data = table.coun[table.coun$freq > 3,], aes(x=x, y=freq)) +
 ggplotly(gp2)
 ```
 
-## R Markdown
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Number of Awards, BoxOffice, and imbdRatings Pt1
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
-## Slide with R Output
-
-```{r cars, echo = TRUE}
-summary(cars)
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(plotly)
+mag1 <- ggplot(movie.wide, aes(x = BoxOffice, y = Awards, color = Metascore, label1 = Title, label2=Year, label3='First Genre', label4='Second Genre', label5='Third Genre')) + 
+  geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(movie.wide$BoxOffice, na.rm=TRUE), 
+             linetype = "dashed", color = "blue")
+ggplotly(mag1)
+  
 ```
 
-## Slide with Plot
+<!-- - Top Left Region  -->
+<!-- - Films of the imdb Top 250 list which had above avg Awards (29) but below avg Box Office (159M) -->
+<!-- - Those films also show lighter shade of points => higher Metascore ratings -->
+<!-- - Range of Year: 1994-2017  -->
+<!-- - We might expect movies with high Award counts to have higher Box Office  -->
 
-```{r pressure}
-plot(pressure)
+
+## Number of Awards, BoxOffice, and imbdRatings Pt2
+
+
+<!-- * Top Left Region -->
+<!-- * Films show darker shades of blue => lower ratings with respect to imdb ratings -->
+<!-- * Indicates differences in how people rate between imdb and Metascore -->
+<!-- * Range of Year: 1994-2017 -->
+<!-- * Films with Biography or Drama as first genre were mostly clustered in this region -->
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+mag2 <- ggplot(movie.wide, aes(x = BoxOffice, y = Awards, color = imdbRating, label1=Title, label2=Year, shape='First Genre', lable3='Second Genre', label4='Third Genre')) + geom_point() +
+  geom_hline(yintercept = 29.44, linetype = "dashed", color = "blue") +
+  geom_vline(xintercept = mean(movie.wide$BoxOffice, na.rm=TRUE), linetype = "dashed", color = "blue") 
+ggplotly(mag2)
 ```
+
+
+
