@@ -10,6 +10,15 @@ fontsize: 12pt
 - Set of 250 movie data from IMDB
 - (https://www.kaggle.com/datasets/yehorkorzh/imdb-top-250-movies)
 
+```{r, echo = FALSE, results=FALSE, message=FALSE, warning=FALSE, comment=FALSE, cache = TRUE}
+library(data.table)
+
+## Loading Data
+data.wide <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFull.csv"
+movie.wide <- fread(data.wide)
+
+```
+
 ## Variables
 
 ### Numeric
@@ -60,15 +69,6 @@ fontsize: 12pt
 
 - Observe characteristics of single variable
 - Present all included variables
-
-```{r, echo = FALSE, results=FALSE, message=FALSE, warning=FALSE, comment=FALSE, cache = TRUE}
-library(data.table)
-
-## Loading Data
-data.wide <- "C:\\Users\\pauld\\OneDrive\\Desktop\\Data Munging\\Final Project\\DataMungingProject\\MovieCleanFull.csv"
-movie.wide <- fread(data.wide)
-
-```
 
 ## Year
 - Mean: 1982.676, SD: 24.80921
@@ -499,24 +499,6 @@ gp2 <- ggplot(data = table.coun[table.coun$freq > 3,], aes(x=x, y=freq)) +
 ggplotly(gp2)
 ```
 
-## Correlation Pt 1
-
-```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
-library(corrplot)
-## intro graphics with correlation
-movie.numeric <- movie.wide[,c("Year", "Runtime", "Metascore", "imdbRating", 
-                               "imdbVotes", "BoxOffice", "Awards", "Nominations")]
-res <- cor(movie.numeric, use = "pairwise.complete.obs")
-res
-```
-
-## Correlation Pt 2
-
-```{r, warning=FALSE, echo=FALSE, message=FALSE, comment=FALSE, cache=TRUE}
-corrplot(res, type = "full", order = "original", t1.srt = 45)
-```
-
-
 
 ## Number of Awards, BoxOffice, and imbdRatings Pt1
 
@@ -607,7 +589,7 @@ movie.wide %>%
         mode = "markers")
 ```
 
-#IMBD Ratings and Production Company
+## IMBD Ratings and Production Company
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y = movie.wide$Production)) + geom_col()
@@ -624,8 +606,6 @@ ggplot(movie.wide = movie.wide$Title, mapping = aes(x = movie.wide$imdbRating, y
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 barplot(table(movie.wide$Title), col=c("lightblue","darkred"),main="Low (0) vs. High (1) Temp",ylab="Count",horiz=T)
-
-table(movie.wide$Title)
 ```
 
 ## ImdbRating and Runtime
@@ -655,3 +635,29 @@ cor(movie.wide$Awards, movie.wide$imdbRating)
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 plot(movie.wide$Awards, movie.wide$imdbRating)
 ```
+
+## Correlation Pt 1
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, cache=TRUE}
+library(corrplot)
+## intro graphics with correlation
+movie.numeric <- movie.wide[,c("Year", "Runtime", "Metascore", "imdbRating", 
+                               "imdbVotes", "BoxOffice", "Awards", "Nominations")]
+res <- cor(movie.numeric, use = "pairwise.complete.obs")
+res
+```
+
+## Correlation Pt 2
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, comment=FALSE, cache=TRUE}
+corrplot(res, type = "full", order = "original", t1.srt = 45)
+```
+
+
+
+
+
+
+
+
+
